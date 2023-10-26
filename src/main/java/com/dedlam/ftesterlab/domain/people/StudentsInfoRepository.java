@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface StudentsInfoRepository extends JpaRepository<StudentInfo, UUID> {
-}
+public interface StudentsInfoRepository extends JpaRepository<StudentInfo, UUID> { }
