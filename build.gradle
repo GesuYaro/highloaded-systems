@@ -8,7 +8,6 @@ group = 'com.dedlam'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '17'
 }
 
 configurations {
@@ -24,9 +23,9 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation group: 'com.h2database', name: 'h2', version: '2.2.224'
 
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly group: 'com.h2database', name: 'h2', version: '2.2.224'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
