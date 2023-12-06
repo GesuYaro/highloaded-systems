@@ -2,6 +2,9 @@ package com.dedlam.ftesterlab.domain.people.services;
 
 import com.dedlam.ftesterlab.domain.people.database.PeopleRepository;
 import com.dedlam.ftesterlab.domain.people.database.Person;
+import com.dedlam.ftesterlab.domain.people.database.contacts.Contact;
+import com.dedlam.ftesterlab.domain.people.database.contacts.PersonContactsInfo;
+import com.dedlam.ftesterlab.domain.people.database.contacts.PersonContactsInfoRepository;
 import com.dedlam.ftesterlab.domain.people.services.dto.PersonDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,37 +13,45 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class PeopleServiceImpl implements PeopleService {
   private final PeopleRepository repository;
+  private final PersonContactsInfoRepository contactsInfoRepository;
   private final Logger logger;
 
 
-  PeopleServiceImpl(PeopleRepository repository, Logger logger) {
+  PeopleServiceImpl(
+    PeopleRepository repository,
+    PersonContactsInfoRepository contactsInfoRepository,
+    Logger logger
+  ) {
     this.repository = repository;
+    this.contactsInfoRepository = contactsInfoRepository;
     this.logger = logger;
   }
 
   @Autowired
-  public PeopleServiceImpl(PeopleRepository repository) {
-    this(repository, LoggerFactory.getLogger(PeopleServiceImpl.class));
+  public PeopleServiceImpl(PeopleRepository repository, PersonContactsInfoRepository contactsInfoRepository) {
+    this(repository, contactsInfoRepository, LoggerFactory.getLogger(PeopleServiceImpl.class));
   }
 
   @Override
   public UUID create(PersonDto request) {
-    var uuid = UUID.randomUUID();
-    var entity = new Person(uuid, request.getName(), request.getMiddleName(), request.getLastName(), request.getBirthday());
+    var entity = new Person(null, request.getName(), request.getMiddleName(), request.getLastName(), request.getBirthday());
 
 
     try {
-      repository.save(entity);
-      return uuid;
+      Person saved = repository.save(entity);
+
+      bindContacts(saved.getId(), Collections.emptyList());
+      return saved.getId();
     } catch (RuntimeException e) {
-      var msg = String.format("Can't create person with uuid='%s'", uuid);
-      logger.warn(msg, e);
+      logger.warn("Can't create person", e);
       return null;
     }
   }
@@ -48,6 +59,11 @@ public class PeopleServiceImpl implements PeopleService {
   @Override
   public List<Person> people() {
     return repository.findAll();
+  }
+
+  @Override
+  public Person person(UUID id) {
+    return repository.findById(id).orElse(null);
   }
 
   @Override
@@ -85,6 +101,25 @@ public class PeopleServiceImpl implements PeopleService {
       var msg = String.format("Person with id='%s' does not exists during delete operation", id);
       logger.warn(msg);
     }
+  }
+
+  @Override
+  public boolean bindContacts(UUID personId, List<Contact> contacts) {
+    contacts.forEach(c -> c.setId(null));
+
+    PersonContactsInfo contactsInfo = contactsInfoRepository.findByPerson_Id(personId);
+    if(contactsInfo == null) {
+      var person = new Person();
+      person.setId(personId);
+      contactsInfo = new PersonContactsInfo(null, person, Collections.emptyList());
+    }
+    var newContactsList = new LinkedList<>(contactsInfo.getContacts());
+    newContactsList.addAll(contacts);
+    contactsInfo.setContacts(newContactsList);
+
+    PersonContactsInfo savedEntity = contactsInfoRepository.save(contactsInfo);
+
+    return true;
   }
 
   private Page<Person> page(int pageNumber, int pageSize) {
