@@ -9,6 +9,10 @@ import java.util.UUID;
 @Entity
 @Table(name = "person_contacts_info")
 public class PersonContactsInfo {
+  /* TODO */ private static final String PERSON_FK_DESCRIPTION = "FOREIGN KEY (person_id) REFERENCES people(id) on update cascade on delete cascade";
+
+  /* TODO */ private static final String JOIN_TABLE_FK_DESCRIPTION = "FOREIGN KEY (person_contact_info_id) REFERENCES person_contacts_info(id) on update cascade on delete cascade"; // TODO
+
   public PersonContactsInfo() {
   }
 
@@ -23,25 +27,26 @@ public class PersonContactsInfo {
   private UUID id;
 
   @OneToOne(
-    cascade = CascadeType.MERGE,
+    cascade = CascadeType.REMOVE,
     orphanRemoval = true,
     optional = false
   )
   @JoinColumn(
     name = "person_id",
-    referencedColumnName = "id"
+    referencedColumnName = "id",
+    foreignKey = @ForeignKey(foreignKeyDefinition = PERSON_FK_DESCRIPTION)
   )
   private Person person;
-
   @OneToMany(
     cascade = CascadeType.ALL
   )
   @JoinTable(
     name = "person_contacts_info_to_contact",
-    joinColumns = @JoinColumn(name = "person_contact_info_id"),
+    joinColumns = @JoinColumn(name = "person_contact_info_id", foreignKey = @ForeignKey(foreignKeyDefinition = JOIN_TABLE_FK_DESCRIPTION)),
     inverseJoinColumns = @JoinColumn(name = "contact_id")
   )
   private List<Contact> contacts;
+
 
   public UUID getId() {
     return id;
