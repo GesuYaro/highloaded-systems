@@ -21,7 +21,6 @@ public class Person {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  @Column(nullable = false)
   private UUID id;
 
   @Column(nullable = false)

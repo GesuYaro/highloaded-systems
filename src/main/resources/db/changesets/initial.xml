@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="2023120760424" author="Mikhail">
+        <createTable tableName="contacts">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_contacts"/>
+            </column>
+            <column name="contact_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_value" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="people">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_people"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="middle_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="birthday" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="person_contacts_info">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person_contacts_info"/>
+            </column>
+            <column name="person_id" type="UUID">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+        <createTable tableName="person_contacts_info_to_contact">
+            <column name="contact_id" type="UUID">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="person_contact_info_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="person_contacts_info" baseColumnNames="person_id"
+                                 constraintName="fk1" referencedTableName="people" referencedColumnNames="id"
+                                 onUpdate="CASCADE" onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="person_contacts_info_to_contact" baseColumnNames="person_contact_info_id"
+                                 constraintName="fk2" referencedTableName="person_contacts_info" referencedColumnNames="id"
+                                 onUpdate="CASCADE" onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="person_contacts_info_to_contact" baseColumnNames="contact_id"
+                                 constraintName="fk3" referencedTableName="contacts" referencedColumnNames="id"
+                                 onUpdate="CASCADE" onDelete="CASCADE"/>
+
+        <createTable tableName="students_info">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_students_info"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="students_info"
+                                 constraintName="FK_STUDENTS_INFO_ON_ID" referencedColumnNames="id"
+                                 referencedTableName="people"/>
+    </changeSet>
+</databaseChangeLog>
