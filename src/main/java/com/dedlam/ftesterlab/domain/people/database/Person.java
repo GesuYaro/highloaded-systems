@@ -1,5 +1,6 @@
 package com.dedlam.ftesterlab.domain.people.database;
 
+import com.dedlam.ftesterlab.auth.models.DefaultUser;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -11,12 +12,13 @@ public class Person {
   public Person() {
   }
 
-  public Person(UUID id, String name, String middleName, String lastName, LocalDate birthday) {
+  public Person(UUID id, String name, String middleName, String lastName, LocalDate birthday, DefaultUser user) {
     this.id = id;
     this.name = name;
     this.middleName = middleName;
     this.lastName = lastName;
     this.birthday = birthday;
+    this.user = user;
   }
 
   @Id
@@ -34,6 +36,10 @@ public class Person {
 
   @Column(nullable = false)
   private LocalDate birthday;
+
+  @OneToOne
+  @JoinColumn(name = "user_id", referencedColumnName = "id")
+  private DefaultUser user;
 
   public UUID getId() {
     return id;
@@ -73,5 +79,9 @@ public class Person {
 
   public void setBirthday(LocalDate birthDay) {
     this.birthday = birthDay;
+  }
+
+  public DefaultUser getUser() {
+    return user;
   }
 }

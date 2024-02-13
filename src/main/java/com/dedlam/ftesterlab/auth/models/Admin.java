@@ -4,20 +4,24 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Transient;
 
+import java.io.Serial;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.dedlam.ftesterlab.auth.models.Role.TEACHER;
+import static com.dedlam.ftesterlab.auth.models.Role.ADMIN;
 
 @Entity
-@DiscriminatorValue("TEACHER")
-public class Teacher extends DefaultUser {
+@DiscriminatorValue("ADMIN")
+public class Admin extends DefaultUser {
+  @Serial
+  private static final long serialVersionUID = 1L;
 
-  public Teacher() {
+  public Admin() {
+    super();
   }
 
-  public Teacher(UUID id, String username, String password) {
+  public Admin(UUID id, String username, String password) {
     super(id, username, password);
   }
 
@@ -25,7 +29,7 @@ public class Teacher extends DefaultUser {
   @Override
   public List<Role> getAuthorities() {
     List<Role> roles = new LinkedList<>(super.getAuthorities());
-    roles.add(TEACHER);
+    roles.add(ADMIN);
     return roles;
   }
 }

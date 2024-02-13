@@ -1,5 +1,6 @@
 package com.dedlam.ftesterlab.domain.people.services;
 
+import com.dedlam.ftesterlab.auth.models.DefaultUser;
 import com.dedlam.ftesterlab.domain.people.database.PeopleRepository;
 import com.dedlam.ftesterlab.domain.people.database.Person;
 import com.dedlam.ftesterlab.domain.people.database.contacts.Contact;
@@ -41,8 +42,8 @@ public class PeopleServiceImpl implements PeopleService {
   }
 
   @Override
-  public UUID create(PersonDto request) {
-    var entity = new Person(null, request.getName(), request.getMiddleName(), request.getLastName(), request.getBirthday());
+  public UUID create(DefaultUser user, PersonDto request) {
+    var entity = new Person(null, request.getName(), request.getMiddleName(), request.getLastName(), request.getBirthday(), user);
 
 
     try {
@@ -67,11 +68,17 @@ public class PeopleServiceImpl implements PeopleService {
   }
 
   @Override
+  public Person personByUserId(UUID userId) {
+    return repository.findByUserId(userId).orElse(null);
+  }
+
+  @Override
   public boolean update(UUID id, PersonDto request) {
     var notExistingPersonMsg = String.format("Can't find person by id='%s'", id);
+    var existing = repository.findById(id);
 
     try {
-      boolean exists = repository.existsById(id);
+      boolean exists = existing.isPresent();
       if (!exists) {
         logger.warn(notExistingPersonMsg);
         return false;
@@ -82,7 +89,7 @@ public class PeopleServiceImpl implements PeopleService {
     }
 
     try {
-      var entity = new Person(id, request.getName(), request.getMiddleName(), request.getLastName(), request.getBirthday());
+      var entity = new Person(id, request.getName(), request.getMiddleName(), request.getLastName(), request.getBirthday(), existing.get().getUser());
       repository.save(entity);
       return true;
     } catch (RuntimeException e) {
@@ -108,7 +115,7 @@ public class PeopleServiceImpl implements PeopleService {
     contacts.forEach(c -> c.setId(null));
 
     PersonContactsInfo contactsInfo = contactsInfoRepository.findByPerson_Id(personId);
-    if(contactsInfo == null) {
+    if (contactsInfo == null) {
       var person = new Person();
       person.setId(personId);
       contactsInfo = new PersonContactsInfo(null, person, Collections.emptyList());

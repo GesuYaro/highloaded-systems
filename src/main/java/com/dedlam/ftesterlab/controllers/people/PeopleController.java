@@ -1,54 +1,52 @@
 package com.dedlam.ftesterlab.controllers.people;
 
-import com.dedlam.ftesterlab.auth.RegistrationService;
+import com.dedlam.ftesterlab.auth.database.UsersRepository;
 import com.dedlam.ftesterlab.domain.people.database.Person;
 import com.dedlam.ftesterlab.domain.people.services.PeopleService;
 import com.dedlam.ftesterlab.domain.people.services.dto.PersonDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.security.auth.message.AuthException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
-import static com.dedlam.ftesterlab.auth.RegistrationResult.FAILED;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestController
 @RequestMapping("/people")
 public class PeopleController {
+  private final UsersRepository usersRepository;
   private final PeopleService service;
-  private final RegistrationService registrationService;
-  private final TransactionTemplate transactionTemplate;
 
-  public PeopleController(PeopleService service, RegistrationService registrationService, TransactionTemplate transactionTemplate) {
+  public PeopleController(UsersRepository usersRepository, PeopleService service) {
+    this.usersRepository = usersRepository;
     this.service = service;
-    this.registrationService = registrationService;
-    this.transactionTemplate = transactionTemplate;
   }
 
-  @GetMapping
-  public PeopleView people() {
-    var people = service.people();
+  @GetMapping("info")
+  public ResponseEntity<PersonView> getInfo() throws AuthException {
+    var username = SecurityContextHolder.getContext().getAuthentication().getName();
+    var userDetails = usersRepository.findUserByUsername(username).orElseThrow(() -> new AuthException("Can't find user"));
 
-    return new PeopleView(people.stream().map(PeopleController::personView).toList());
+    var userId = userDetails.getId();
+    var person = service.personByUserId(userId);
+    if (person == null) {
+      return ResponseEntity.badRequest().build();
+    }
+
+    var view = personView(person);
+    return ResponseEntity.ok(view);
   }
 
-  @PostMapping
-  public ResponseEntity<String> register(@RequestBody RegistrationRequest request) {
-    var person = request.person;
-    var req = new PersonDto(person.name, person.middleName, person.lastName, person.birthday);
+  @PostMapping("info")
+  public ResponseEntity<String> register(@RequestBody PersonView request) throws AuthException {
+    var username = SecurityContextHolder.getContext().getAuthentication().getName();
+    var userDetails = usersRepository.findUserByUsername(username).orElseThrow(() -> new AuthException("Can't find user"));
 
-    UUID personId = transactionTemplate.execute(txStatus -> {
-      var registrationResult = registrationService.register(request.username, request.password);
-      if (registrationResult == FAILED) {
-        txStatus.setRollbackOnly();
-        return null;
-      }
-      return service.create(req);
-    });
+    UUID personId = service.create(userDetails, new PersonDto(request.name, request.middleName, request.lastName, request.birthday));
 
     if (personId == null) {
       return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
@@ -57,19 +55,20 @@ public class PeopleController {
     return ResponseEntity.ok(personId.toString());
   }
 
-  @PutMapping("/{id}")
-  public ResponseEntity<Boolean> update(
-    @PathVariable UUID id,
-    @RequestBody PersonView person
-  ) {
+  @PutMapping("info")
+  public ResponseEntity<Boolean> updateInfo(@RequestBody PersonView person) throws AuthException {
+    var username = SecurityContextHolder.getContext().getAuthentication().getName();
+    var userDetails = usersRepository.findUserByUsername(username).orElseThrow(() -> new AuthException("Can't find user"));
+
+    var existingPerson = service.personByUserId(userDetails.getId());
     var dto = new PersonDto(person.name, person.middleName, person.lastName, person.birthday);
 
-    boolean result = service.update(id, dto);
+    boolean result = service.update(existingPerson.getId(), dto);
 
     return ResponseEntity.ok(result);
   }
 
-  @DeleteMapping("/{id}")
+  //  @DeleteMapping("/{id}")
   public ResponseEntity<Boolean> delete(
     @PathVariable UUID id
   ) {
@@ -82,9 +81,6 @@ public class PeopleController {
     return new PersonView(person.getId().toString(), person.getName(), person.getMiddleName(), person.getLastName(), person.getBirthday());
   }
 
-  public record PeopleView(List<PersonView> people) {
-  }
-
   public record PersonView(
     String id,
     String name,
@@ -92,13 +88,5 @@ public class PeopleController {
     String lastName,
     @JsonFormat(pattern = "dd.MM.yyyy") LocalDate birthday
   ) {
-  }
-
-  public record RegistrationRequest(
-    String username,
-    String password,
-    PersonView person
-  ) {
-
   }
 }
