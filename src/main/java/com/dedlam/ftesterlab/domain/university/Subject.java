@@ -1,43 +1,41 @@
-package com.dedlam.ftesterlab.domain.tests.database;
+package com.dedlam.ftesterlab.domain.university;
 
-import com.dedlam.ftesterlab.domain.university.Subject;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tests")
+@Table(name = "subjects")
 @Getter
 @Setter
-@ToString
-public class Test {
+@NoArgsConstructor
+public class Subject {
+  public Subject(UUID id, String name, TeacherInfo teacher) {
+    this.id = id;
+    this.name = name;
+    this.teacher = teacher;
+  }
+
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  @Column(name = "id")
   private UUID id;
 
-  @Column(name = "name")
+  @Column(nullable = false, unique = true)
   private String name;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "subject_id")
-  @ToString.Exclude
-  private Subject subject;
+  @ManyToOne
+  @JoinColumn(name = "teacher_id", referencedColumnName = "id")
+  private TeacherInfo teacher;
 
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "test")
-  @ToString.Exclude
-  private List<Question> questions;
-
-  @Column(name = "duration")
-  private Duration duration;
+  @ManyToMany(mappedBy = "subjects")
+  private List<Group> groups;
 
   @Override
   public final boolean equals(Object o) {
@@ -49,8 +47,8 @@ public class Test {
     Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
     if (thisEffectiveClass != oEffectiveClass)
       return false;
-    Test test = (Test) o;
-    return getId() != null && Objects.equals(getId(), test.getId());
+    Subject subject = (Subject) o;
+    return getId() != null && Objects.equals(getId(), subject.getId());
   }
 
   @Override

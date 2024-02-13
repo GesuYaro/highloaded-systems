@@ -26,7 +26,7 @@ public class AdminController {
     this.peopleRepository = peopleRepository;
   }
 
-  @PostMapping("registration/student")
+  @PostMapping("registration/students")
   public ResponseEntity<UUID> registerStudent(@RequestBody RegisterUserRequest request) {
     var student = new Student(null, request.username, request.password);
     var savedStudent = usersRepository.save(student);
@@ -36,8 +36,8 @@ public class AdminController {
 
   @PostMapping("registration/teacher")
   public ResponseEntity<UUID> registerTeacher(@RequestBody RegisterUserRequest request) {
-    var student = new Teacher(null, request.username, request.password);
-    var savedTeacher = usersRepository.save(student);
+    var teacher = new Teacher(null, request.username, request.password);
+    var savedTeacher = usersRepository.save(teacher);
 
     return ResponseEntity.ok(savedTeacher.getId());
   }
