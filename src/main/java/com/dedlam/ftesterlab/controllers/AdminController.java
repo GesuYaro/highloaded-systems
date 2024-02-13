@@ -26,7 +26,7 @@ public class AdminController {
     this.peopleRepository = peopleRepository;
   }
 
-  @PostMapping("registration/student")
+  @PostMapping("registration/students")
   public ResponseEntity<UUID> registerStudent(@RequestBody RegisterUserRequest request) {
     var student = new Student(null, request.username, request.password);
     var savedStudent = usersRepository.save(student);
