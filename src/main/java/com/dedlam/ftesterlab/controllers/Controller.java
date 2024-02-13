@@ -2,8 +2,8 @@
 //
 //import com.dedlam.ftesterlab.domain.people.database.Person;
 //import com.dedlam.ftesterlab.domain.people.services.PeopleServiceImpl;
-//import com.dedlam.ftesterlab.domain.university.StudentInfo;
-//import com.dedlam.ftesterlab.domain.university.StudentsInfoRepository;
+//import com.dedlam.ftesterlab.domain.university.models.StudentInfo;
+//import com.dedlam.ftesterlab.domain.university.database.StudentsInfoRepository;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.web.bind.annotation.GetMapping;
 //import org.springframework.web.bind.annotation.RequestMapping;

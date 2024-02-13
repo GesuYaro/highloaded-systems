@@ -1,6 +1,6 @@
 package com.dedlam.ftesterlab.domain.tests.database;
 
-import com.dedlam.ftesterlab.domain.university.Subject;
+import com.dedlam.ftesterlab.domain.university.models.Subject;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

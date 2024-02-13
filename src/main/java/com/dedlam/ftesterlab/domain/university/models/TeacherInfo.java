@@ -1,4 +1,4 @@
-package com.dedlam.ftesterlab.domain.university;
+package com.dedlam.ftesterlab.domain.university.models;
 
 import com.dedlam.ftesterlab.domain.people.database.Person;
 import jakarta.persistence.*;

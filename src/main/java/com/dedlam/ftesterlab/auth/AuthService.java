@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -74,13 +73,6 @@ public class AuthService {
 
 
   private UserDetails getUserDetailsOrThrow(String login) throws AuthException {
-    Optional<? extends UserDetails> userDetailsOpt = adminsRepository.findAdminByUsername(login);
-    if (userDetailsOpt.isEmpty()) {
-      userDetailsOpt = usersRepository.findUserByUsername(login);
-    }
-    if (userDetailsOpt.isEmpty())
-      throw new AuthException("Can't find user");
-
-    return userDetailsOpt.get();
+    return usersRepository.findUserByUsername(login).orElseThrow(() -> new AuthException("Can't find user"));
   }
 }
