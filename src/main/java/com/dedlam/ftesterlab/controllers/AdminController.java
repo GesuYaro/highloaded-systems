@@ -36,8 +36,8 @@ public class AdminController {
 
   @PostMapping("registration/teacher")
   public ResponseEntity<UUID> registerTeacher(@RequestBody RegisterUserRequest request) {
-    var student = new Teacher(null, request.username, request.password);
-    var savedTeacher = usersRepository.save(student);
+    var teacher = new Teacher(null, request.username, request.password);
+    var savedTeacher = usersRepository.save(teacher);
 
     return ResponseEntity.ok(savedTeacher.getId());
   }

@@ -1,5 +1,6 @@
 package com.dedlam.ftesterlab.domain.tests.database;
 
+import com.dedlam.ftesterlab.domain.people.database.Person;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -12,6 +13,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class Subject {
 
     @Id
@@ -21,6 +24,11 @@ public class Subject {
 
     @Column(name = "name")
     private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    @ToString.Exclude
+    private Person owner;
 
     @Override
     public final boolean equals(Object o) {
