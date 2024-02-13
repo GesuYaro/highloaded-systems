@@ -8,16 +8,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.dedlam.ftesterlab.auth.models.Role.TEACHER;
+import static com.dedlam.ftesterlab.auth.models.Role.STUDENT;
 
 @Entity
-@DiscriminatorValue("TEACHER")
-public class Teacher extends DefaultUser {
-
-  public Teacher() {
+@DiscriminatorValue("STUDENT")
+public class Student extends DefaultUser {
+  public Student() {
+    super();
   }
 
-  public Teacher(UUID id, String username, String password) {
+  public Student(UUID id, String username, String password) {
     super(id, username, password);
   }
 
@@ -25,7 +25,7 @@ public class Teacher extends DefaultUser {
   @Override
   public List<Role> getAuthorities() {
     List<Role> roles = new LinkedList<>(super.getAuthorities());
-    roles.add(TEACHER);
+    roles.add(STUDENT);
     return roles;
   }
 }
