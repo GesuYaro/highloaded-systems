@@ -1,6 +1,6 @@
 package com.dedlam.ftesterlab.controllers.university;
 
-import com.dedlam.ftesterlab.domain.tests.database.Subject;
+import com.dedlam.ftesterlab.domain.university.Subject;
 import com.dedlam.ftesterlab.domain.tests.services.SubjectService;
 import com.dedlam.ftesterlab.domain.tests.services.dto.SubjectCreateDto;
 import com.dedlam.ftesterlab.domain.tests.services.dto.SubjectView;

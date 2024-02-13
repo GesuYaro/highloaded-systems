@@ -1,6 +1,6 @@
 package com.dedlam.ftesterlab.domain.tests.services;
 
-import com.dedlam.ftesterlab.domain.tests.database.Subject;
+import com.dedlam.ftesterlab.domain.university.Subject;
 import com.dedlam.ftesterlab.domain.tests.services.dto.SubjectCreateDto;
 import jakarta.security.auth.message.AuthException;
 import org.springframework.data.domain.Page;
