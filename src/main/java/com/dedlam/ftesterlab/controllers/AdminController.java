@@ -59,7 +59,7 @@ public class AdminController {
 
   @PostMapping("groups")
   public ResponseEntity<Boolean> createGroup(@RequestBody CreateGroupRequest request) {
-    return null;
+    return ResponseEntity.ok(groupsService.createGroup(request.name, request.grade, request.subjectNames));
   }
 
   @GetMapping("people")
