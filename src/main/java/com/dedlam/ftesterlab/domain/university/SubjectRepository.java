@@ -1,5 +1,6 @@
 package com.dedlam.ftesterlab.domain.university;
 
+import com.dedlam.ftesterlab.domain.university.models.Subject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
