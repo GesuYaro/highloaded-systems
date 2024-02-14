@@ -1,4 +1,4 @@
-package com.dedlam.ftesterlab.domain.university;
+package com.dedlam.ftesterlab.domain.university.models;
 
 import jakarta.persistence.*;
 
@@ -25,10 +25,10 @@ public class Group {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @Column
+  @Column(nullable = false, unique = true)
   private String name;
 
-  @Column
+  @Column(nullable = false)
   private int grade;
 
   @OneToMany(fetch = LAZY, mappedBy = "group")

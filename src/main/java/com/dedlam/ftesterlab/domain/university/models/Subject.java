@@ -1,4 +1,4 @@
-package com.dedlam.ftesterlab.domain.university;
+package com.dedlam.ftesterlab.domain.university.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;

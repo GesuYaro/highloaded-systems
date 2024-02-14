@@ -1,6 +1,7 @@
-package com.dedlam.ftesterlab.domain.university;
+package com.dedlam.ftesterlab.domain.university.models;
 
 import com.dedlam.ftesterlab.domain.people.database.Person;
+import com.dedlam.ftesterlab.domain.university.models.Group;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -23,7 +24,7 @@ public class StudentInfo {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @OneToOne(cascade = CascadeType.ALL)
+  @OneToOne(cascade = CascadeType.ALL, optional = false)
   @JoinColumn(name = "student_id", referencedColumnName = "id")
   private Person student;
 
