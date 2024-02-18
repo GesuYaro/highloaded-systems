@@ -21,5 +21,5 @@ public interface PeopleService {
 
   void delete(UUID id);
 
-  boolean bindContacts(UUID personId, List<Contact> contacts);
+  boolean updateContacts(UUID personId, List<Contact> contacts);
 }

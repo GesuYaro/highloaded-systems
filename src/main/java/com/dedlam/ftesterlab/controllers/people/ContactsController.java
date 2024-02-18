@@ -32,14 +32,12 @@ public class ContactsController extends BaseController {
       .toList();
   }
 
-  @PostMapping("/contacts")
-  public void addToPerson(@RequestBody List<ContactView> contacts) {
+  @PutMapping("/contacts")
+  public void updateContacts(@RequestBody List<ContactView> contacts) {
     var personId = person().getId();
     List<Contact> contactsReq = contacts.stream().map(c -> new Contact(null, c.type, c.value)).toList();
 
-    peopleService.bindContacts(personId, contactsReq);
-
-    return;
+    peopleService.updateContacts(personId, contactsReq);
   }
 
   private static ContactView contactView(Contact contact) {

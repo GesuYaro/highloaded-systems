@@ -49,7 +49,7 @@ public class PeopleServiceImpl implements PeopleService {
     try {
       Person saved = repository.save(entity);
 
-      bindContacts(saved.getId(), Collections.emptyList());
+      updateContacts(saved.getId(), Collections.emptyList());
       return saved.getId();
     } catch (RuntimeException e) {
       logger.warn("Can't create person", e);
@@ -111,7 +111,7 @@ public class PeopleServiceImpl implements PeopleService {
   }
 
   @Override
-  public boolean bindContacts(UUID personId, List<Contact> contacts) {
+  public boolean updateContacts(UUID personId, List<Contact> contacts) {
     contacts.forEach(c -> c.setId(null));
 
     PersonContactsInfo contactsInfo = contactsInfoRepository.findByPerson_Id(personId);
@@ -120,9 +120,10 @@ public class PeopleServiceImpl implements PeopleService {
       person.setId(personId);
       contactsInfo = new PersonContactsInfo(null, person, Collections.emptyList());
     }
-    var newContactsList = new LinkedList<>(contactsInfo.getContacts());
-    newContactsList.addAll(contacts);
-    contactsInfo.setContacts(newContactsList);
+
+    List<Contact> existingContacts = contactsInfo.getContacts();
+    existingContacts.clear();
+    existingContacts.addAll(contacts);
 
     PersonContactsInfo savedEntity = contactsInfoRepository.save(contactsInfo);
 
