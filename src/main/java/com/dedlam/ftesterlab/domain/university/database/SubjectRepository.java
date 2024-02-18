@@ -1,4 +1,4 @@
-package com.dedlam.ftesterlab.domain.university;
+package com.dedlam.ftesterlab.domain.university.database;
 
 import com.dedlam.ftesterlab.domain.university.models.Subject;
 import org.springframework.data.domain.Page;

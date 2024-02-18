@@ -22,12 +22,11 @@ public class TeacherInfo {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "teacher_id", referencedColumnName = "id")
+  @OneToOne(cascade = CascadeType.ALL, optional = false)
+  @JoinColumn(nullable = false, unique = true, name = "teacher_id", referencedColumnName = "id")
   private Person teacher;
 
   @OneToMany(mappedBy = "teacher")
-  @Transient
   private List<Subject> subjects;
 
   public UUID getId() {

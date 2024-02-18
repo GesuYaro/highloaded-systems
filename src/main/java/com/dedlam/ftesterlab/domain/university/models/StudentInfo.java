@@ -25,7 +25,7 @@ public class StudentInfo {
   private UUID id;
 
   @OneToOne(cascade = CascadeType.ALL, optional = false)
-  @JoinColumn(name = "student_id", referencedColumnName = "id")
+  @JoinColumn(unique = true, nullable = false, name = "student_id", referencedColumnName = "id")
   private Person student;
 
   @ManyToOne(fetch = LAZY)

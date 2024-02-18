@@ -1,10 +1,12 @@
-package com.dedlam.ftesterlab.domain.university;
+package com.dedlam.ftesterlab.domain.university.services;
 
 import com.dedlam.ftesterlab.domain.university.database.GroupsRepository;
 import com.dedlam.ftesterlab.domain.university.database.StudentsInfoRepository;
+import com.dedlam.ftesterlab.domain.university.database.SubjectRepository;
 import com.dedlam.ftesterlab.domain.university.models.Group;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -33,9 +35,12 @@ public class GroupsService {
     var subjects = subjectRepository.findAllByNameIn(subjectNames);
     var group = new Group(null, name, grade, List.of(), subjects);
 
-    repository.save(group);
-
-    return true;
+    try {
+      repository.save(group);
+      return true;
+    } catch (DataAccessException e) {
+      return false;
+    }
   }
 
   public boolean bindStudentsToGroup(String groupName, Set<UUID> studentsInfoIds) {
@@ -47,7 +52,7 @@ public class GroupsService {
 
       try {
         repository.save(group);
-      } catch (RuntimeException e) {
+      } catch (DataAccessException e) {
         logger.error("Can't save group");
         ctx.setRollbackOnly();
         return false;
