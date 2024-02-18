@@ -31,7 +31,7 @@ public class Subject {
   private String name;
 
   @ManyToOne
-  @JoinColumn(name = "teacher_id", referencedColumnName = "id")
+  @JoinColumn(nullable = false, name = "teacher_id", referencedColumnName = "id")
   private TeacherInfo teacher;
 
   @ManyToMany(mappedBy = "subjects")

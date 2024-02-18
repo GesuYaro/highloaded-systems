@@ -1,8 +1,8 @@
-package com.dedlam.ftesterlab.domain.tests.services;
+package com.dedlam.ftesterlab.domain.university.services;
 
 import com.dedlam.ftesterlab.auth.database.UsersRepository;
-import com.dedlam.ftesterlab.domain.tests.services.dto.SubjectCreateDto;
-import com.dedlam.ftesterlab.domain.university.SubjectRepository;
+import com.dedlam.ftesterlab.domain.university.services.dto.SubjectCreateDto;
+import com.dedlam.ftesterlab.domain.university.database.SubjectRepository;
 import com.dedlam.ftesterlab.domain.university.database.TeachersInfoRepository;
 import com.dedlam.ftesterlab.domain.university.models.Subject;
 import com.dedlam.ftesterlab.utils.exceptions.BaseException;

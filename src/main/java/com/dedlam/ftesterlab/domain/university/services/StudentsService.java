@@ -1,10 +1,11 @@
-package com.dedlam.ftesterlab.domain.university;
+package com.dedlam.ftesterlab.domain.university.services;
 
 import com.dedlam.ftesterlab.domain.people.database.Person;
 import com.dedlam.ftesterlab.domain.university.database.StudentsInfoRepository;
 import com.dedlam.ftesterlab.domain.university.models.StudentInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -38,7 +39,7 @@ public class StudentsService {
       List<StudentInfo> savedStudents;
       try {
         savedStudents = repository.saveAll(studentsInfo);
-      } catch (RuntimeException e) {
+      } catch (DataAccessException e) {
         logger.error("Can't create students -> ROLLBACK");
         ctx.setRollbackOnly();
         return false;

@@ -21,10 +21,10 @@ public class DefaultUser implements UserDetails {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @Column
+  @Column(nullable = false, unique = true)
   private String username;
 
-  @Column
+  @Column(nullable = false)
   private String password;
 
   public DefaultUser() {

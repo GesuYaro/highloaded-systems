@@ -1,4 +1,4 @@
-package com.dedlam.ftesterlab.domain.tests.services.dto;
+package com.dedlam.ftesterlab.domain.university.services.dto;
 
 import java.util.UUID;
 

@@ -1,12 +1,16 @@
-package com.dedlam.ftesterlab.domain.university;
+package com.dedlam.ftesterlab.domain.university.services;
 
 import com.dedlam.ftesterlab.domain.university.database.GroupsRepository;
 import com.dedlam.ftesterlab.domain.university.database.StudentsInfoRepository;
+import com.dedlam.ftesterlab.domain.university.database.SubjectRepository;
+import com.dedlam.ftesterlab.domain.university.models.Group;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,29 +20,39 @@ import static java.lang.Boolean.TRUE;
 public class GroupsService {
   private static final Logger logger = LoggerFactory.getLogger(GroupsService.class);
   private final StudentsInfoRepository studentsInfoRepository;
-  private final GroupsRepository groupsRepository;
+  private final GroupsRepository repository;
   private final TransactionTemplate transactionTemplate;
+  private final SubjectRepository subjectRepository;
 
-  public GroupsService(StudentsInfoRepository studentsInfoRepository, GroupsRepository groupsRepository, TransactionTemplate transactionTemplate) {
+  public GroupsService(StudentsInfoRepository studentsInfoRepository, GroupsRepository repository, TransactionTemplate transactionTemplate, SubjectRepository subjectRepository) {
     this.studentsInfoRepository = studentsInfoRepository;
-    this.groupsRepository = groupsRepository;
+    this.repository = repository;
     this.transactionTemplate = transactionTemplate;
+    this.subjectRepository = subjectRepository;
   }
 
   public boolean createGroup(String name, int grade, Set<String> subjectNames) {
-    return true;
+    var subjects = subjectRepository.findAllByNameIn(subjectNames);
+    var group = new Group(null, name, grade, List.of(), subjects);
+
+    try {
+      repository.save(group);
+      return true;
+    } catch (DataAccessException e) {
+      return false;
+    }
   }
 
   public boolean bindStudentsToGroup(String groupName, Set<UUID> studentsInfoIds) {
     return TRUE.equals(transactionTemplate.execute((ctx) -> {
-      var group = groupsRepository.findByName(groupName).orElseThrow(() -> new RuntimeException("TODO"));
+      var group = repository.findByName(groupName).orElseThrow(() -> new RuntimeException("TODO"));
       var studentsInfo = studentsInfoRepository.findAllByIdIn(studentsInfoIds);
 
       group.setStudents(studentsInfo);
 
       try {
-        groupsRepository.save(group);
-      } catch (RuntimeException e) {
+        repository.save(group);
+      } catch (DataAccessException e) {
         logger.error("Can't save group");
         ctx.setRollbackOnly();
         return false;

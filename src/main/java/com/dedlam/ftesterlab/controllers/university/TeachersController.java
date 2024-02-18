@@ -1,20 +1,18 @@
 package com.dedlam.ftesterlab.controllers.university;
 
-import com.dedlam.ftesterlab.domain.tests.services.SubjectService;
-import com.dedlam.ftesterlab.domain.tests.services.dto.SubjectCreateDto;
-import com.dedlam.ftesterlab.domain.tests.services.dto.SubjectView;
+import com.dedlam.ftesterlab.domain.university.services.SubjectService;
+import com.dedlam.ftesterlab.domain.university.services.dto.SubjectCreateDto;
+import com.dedlam.ftesterlab.domain.university.services.dto.SubjectView;
 import com.dedlam.ftesterlab.domain.university.models.Subject;
 import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController("/teachers")
+@RestController
+@RequestMapping("/teachers")
 @RequiredArgsConstructor
 public class TeachersController {
 
