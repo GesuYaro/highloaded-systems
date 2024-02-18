@@ -35,8 +35,6 @@ public class TeachersController extends BaseController {
         return subjectService.subjects(username, pageable).map(TeachersController::toSubjectView);
     }
 
-
-
     private static SubjectView toSubjectView(Subject subject) {
         return new SubjectView(subject.getId(), subject.getName());
     }

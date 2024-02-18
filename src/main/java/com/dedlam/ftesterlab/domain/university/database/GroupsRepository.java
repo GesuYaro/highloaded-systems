@@ -7,5 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface GroupsRepository extends JpaRepository<Group, UUID> {
+  boolean existsByName(String name);
   Optional<Group> findByName(String name);
 }

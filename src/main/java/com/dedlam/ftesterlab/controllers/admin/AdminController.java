@@ -1,12 +1,11 @@
 package com.dedlam.ftesterlab.controllers.admin;
 
-import com.dedlam.ftesterlab.auth.database.UsersRepository;
-import com.dedlam.ftesterlab.domain.people.database.PeopleRepository;
 import com.dedlam.ftesterlab.domain.university.services.GroupsService;
-import com.dedlam.ftesterlab.domain.university.services.StudentsService;
-import com.dedlam.ftesterlab.domain.university.services.TeachersService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Set;
 

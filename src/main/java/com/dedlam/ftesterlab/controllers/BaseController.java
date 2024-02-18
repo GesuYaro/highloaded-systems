@@ -4,6 +4,7 @@ import com.dedlam.ftesterlab.auth.database.UsersRepository;
 import com.dedlam.ftesterlab.auth.models.DefaultUser;
 import com.dedlam.ftesterlab.domain.people.database.Person;
 import com.dedlam.ftesterlab.domain.people.services.PeopleService;
+import jakarta.annotation.Nullable;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public abstract class BaseController {
@@ -24,7 +25,7 @@ public abstract class BaseController {
     return usersRepository.findUserByUsername(username).orElse(null);
   }
 
-  protected Person person() {
+  protected @Nullable Person person() {
     var user = user();
     return peopleService.personByUserId(user.getId());
   }
