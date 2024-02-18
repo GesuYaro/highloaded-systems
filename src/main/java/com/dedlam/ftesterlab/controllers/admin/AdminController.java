@@ -13,18 +13,10 @@ import java.util.Set;
 @RestController
 @RequestMapping("admin")
 public class AdminController {
-  private final UsersRepository usersRepository;
-  private final PeopleRepository peopleRepository;
   private final GroupsService groupsService;
-  private final StudentsService studentsService;
-  private final TeachersService teachersService;
 
-  public AdminController(UsersRepository usersRepository, PeopleRepository peopleRepository, GroupsService groupsService, StudentsService studentsService, TeachersService teachersService) {
-    this.usersRepository = usersRepository;
-    this.peopleRepository = peopleRepository;
+  public AdminController(GroupsService groupsService) {
     this.groupsService = groupsService;
-    this.studentsService = studentsService;
-    this.teachersService = teachersService;
   }
 
   @PostMapping("groups")
