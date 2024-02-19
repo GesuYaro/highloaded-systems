@@ -3,6 +3,11 @@ package com.dedlam.ftesterlab.controllers.university;
 import com.dedlam.ftesterlab.auth.database.UsersRepository;
 import com.dedlam.ftesterlab.controllers.BaseController;
 import com.dedlam.ftesterlab.domain.people.services.PeopleService;
+import com.dedlam.ftesterlab.domain.tests.services.TestService;
+import com.dedlam.ftesterlab.domain.tests.services.dto.TestCreateDto;
+import com.dedlam.ftesterlab.domain.tests.services.dto.TestSearchDto;
+import com.dedlam.ftesterlab.domain.tests.services.dto.TestView;
+import com.dedlam.ftesterlab.domain.tests.mappers.TestMapper;
 import com.dedlam.ftesterlab.domain.university.models.Subject;
 import com.dedlam.ftesterlab.domain.university.services.SubjectService;
 import com.dedlam.ftesterlab.domain.university.services.dto.SubjectCreateDto;
@@ -17,22 +22,37 @@ import org.springframework.web.bind.annotation.*;
 public class TeachersController extends BaseController {
 
     private final SubjectService subjectService;
+    private final TestMapper testMapper;
+    private final TestService testService;
 
-    public TeachersController(UsersRepository usersRepository, PeopleService peopleService, SubjectService subjectService) {
+    public TeachersController(UsersRepository usersRepository, PeopleService peopleService, SubjectService subjectService, TestMapper testMapper, TestService testService) {
         super(usersRepository, peopleService);
         this.subjectService = subjectService;
+        this.testMapper = testMapper;
+        this.testService = testService;
     }
 
     @PostMapping("/subjects")
-    public SubjectView createSubject(@RequestBody SubjectCreateDto createDto) throws AuthException {
-        var username = username();
-        return toSubjectView(subjectService.create(createDto, username));
+    public SubjectView createSubject(@RequestBody SubjectCreateDto createDto) {
+        var user = person();
+        return toSubjectView(subjectService.create(createDto, user));
     }
 
     @GetMapping("/subjects")
-    public Page<SubjectView> subjects(Pageable pageable) throws AuthException {
-        var username = username();
-        return subjectService.subjects(username, pageable).map(TeachersController::toSubjectView);
+    public Page<SubjectView> subjects(Pageable pageable) {
+        var user = person();
+        return subjectService.subjects(user, pageable).map(TeachersController::toSubjectView);
+    }
+
+    @PostMapping("/tests")
+    public TestView createTest(@RequestBody TestCreateDto testCreateDto) {
+        var user = person();
+        return testMapper.toTestView(testService.createTest(testCreateDto, user));
+    }
+
+    @GetMapping("/tests")
+    public Page<TestView> tests(TestSearchDto testSearchDto, Pageable pageable) {
+        return testService.tests(testSearchDto, pageable).map(testMapper::toTestView);
     }
 
     private static SubjectView toSubjectView(Subject subject) {

@@ -1,8 +1,9 @@
-package com.dedlam.ftesterlab.domain.tests.database;
+package com.dedlam.ftesterlab.domain.tests.models;
 
 import com.dedlam.ftesterlab.domain.university.models.Subject;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class Test {
 
   @Id
@@ -32,7 +34,7 @@ public class Test {
   @ToString.Exclude
   private Subject subject;
 
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "test")
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "test", cascade = CascadeType.PERSIST)
   @ToString.Exclude
   private List<Question> questions;
 
