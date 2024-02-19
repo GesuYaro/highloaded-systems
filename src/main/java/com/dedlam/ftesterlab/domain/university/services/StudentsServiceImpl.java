@@ -50,7 +50,7 @@ public class StudentsServiceImpl implements StudentsService {
       boolean bindToGroupSuccess = groupsService.bindStudentsToGroup(groupName, studentIds);
 
       if (!bindToGroupSuccess) {
-        logger.error("Can't bind students to group");
+        logger.error("Can't bind students to group -> ROLLBACK");
         ctx.setRollbackOnly();
         return false;
       }
