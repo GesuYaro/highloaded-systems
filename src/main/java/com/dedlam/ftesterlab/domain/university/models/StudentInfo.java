@@ -2,6 +2,7 @@ package com.dedlam.ftesterlab.domain.university.models;
 
 import com.dedlam.ftesterlab.domain.people.database.Person;
 import com.dedlam.ftesterlab.domain.university.models.Group;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -28,7 +29,7 @@ public class StudentInfo {
   @JoinColumn(unique = true, nullable = false, name = "student_id", referencedColumnName = "id")
   private Person student;
 
-  @ManyToOne(fetch = LAZY)
+  @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "group_id", referencedColumnName = "id")
   private Group group;
 
@@ -48,7 +49,7 @@ public class StudentInfo {
     this.student = student;
   }
 
-  public Group getGroup() {
+  public @Nullable Group getGroup() {
     return group;
   }
 

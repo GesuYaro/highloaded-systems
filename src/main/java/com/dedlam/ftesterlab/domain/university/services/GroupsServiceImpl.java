@@ -50,7 +50,8 @@ public class GroupsServiceImpl implements GroupsService {
       var group = repository.findByName(groupName).orElseThrow(() -> new RuntimeException("TODO"));
       var studentsInfo = studentsInfoRepository.findAllByIdIn(studentsInfoIds);
 
-      group.setStudents(studentsInfo);
+      group.getStudents().addAll(studentsInfo);
+      studentsInfo.forEach(info -> info.setGroup(group));
 
       try {
         repository.save(group);
