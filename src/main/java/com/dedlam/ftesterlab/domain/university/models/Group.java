@@ -31,7 +31,7 @@ public class Group {
   @Column(nullable = false)
   private int grade;
 
-  @OneToMany(fetch = LAZY, mappedBy = "group")
+  @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
   private List<StudentInfo> students;
 
   @ManyToMany

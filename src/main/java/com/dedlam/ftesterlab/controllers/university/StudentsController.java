@@ -48,8 +48,11 @@ public class StudentsController extends BaseController {
     }
     var studentInfo = studentInfoOpt.get();
     var group = studentInfo.getGroup();
-    var view = new StudentInfoView(group.getName(), group.getGrade());
-    return ResponseEntity.ok(view);
+    var view = group != null
+      ? new StudentInfoView(group.getName(), group.getGrade())
+      : null;
+
+    return view == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(view);
   }
 
   public record StudentInfoView(

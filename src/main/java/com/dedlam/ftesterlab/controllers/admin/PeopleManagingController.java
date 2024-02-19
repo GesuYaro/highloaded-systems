@@ -31,16 +31,12 @@ public class PeopleManagingController {
 
   private final UsersRepository usersRepository;
   private final PeopleRepository peopleRepository;
-  private final StudentsService studentsService;
   private final TeachersService teachersService;
-  private final GroupsRepository groupsRepository;
 
-  public PeopleManagingController(UsersRepository usersRepository, PeopleRepository peopleRepository, StudentsService studentsService, TeachersService teachersService, GroupsRepository groupsRepository) {
+  public PeopleManagingController(UsersRepository usersRepository, PeopleRepository peopleRepository, TeachersService teachersService) {
     this.usersRepository = usersRepository;
     this.peopleRepository = peopleRepository;
-    this.studentsService = studentsService;
     this.teachersService = teachersService;
-    this.groupsRepository = groupsRepository;
   }
 
   @GetMapping("people")
@@ -53,22 +49,6 @@ public class PeopleManagingController {
     );
 
     return ResponseEntity.ok(people);
-  }
-
-  @PostMapping("students/init")
-  public ResponseEntity<?> initStudentsInfo(@RequestBody InitStudentsInfoRequest request) {
-    Set<String> logins = Set.copyOf(request.peopleLogins);
-    var people = peopleRepository.findAllByUserUsernameIn(logins);
-
-    var validationMessage = validateStudentsForInit(people, request);
-    if (validationMessage != null) {
-      logger.warn(validationMessage);
-      return new ResponseEntity<>(validationMessage, UNPROCESSABLE_ENTITY);
-    }
-
-    var result = studentsService.createAndInitStudentsInfo(request.groupName, people);
-
-    return ResponseEntity.ok(result);
   }
 
   @PostMapping("teachers/init")
@@ -99,43 +79,11 @@ public class PeopleManagingController {
     return ResponseEntity.ok(result);
   }
 
-  private @Nullable String validateStudentsForInit(List<Person> people, InitStudentsInfoRequest request) {
-    Set<String> logins = Set.copyOf(request.peopleLogins);
-
-    if (people.size() != logins.size()) {
-      var foundLogins = people.stream().map(p -> p.getUser().getUsername()).collect(Collectors.toSet());
-      var unknownLogins = logins.stream().filter(login -> !foundLogins.contains(login)).collect(Collectors.toSet());
-      return String.format("Can't init students, because can't find people with usernames %s", unknownLogins);
-    }
-
-    var notStudentsUsernames = people.stream()
-      .map(Person::getUser)
-      .filter(user -> !Student.class.isAssignableFrom(user.getClass()))
-      .map(DefaultUser::getUsername)
-      .toList();
-
-    if (!notStudentsUsernames.isEmpty()) {
-      return String.format("Can't init students, because users with usernames %s aren't students", notStudentsUsernames);
-    }
-
-    if (!groupsRepository.existsByName(request.groupName)) {
-      return String.format("Can't init students, because group '%s' doesn't exist", request.groupName);
-    }
-
-    return null;
-  }
-
   private static PersonView personView(Person person) {
     return new PersonView(
       person.getUser().getUsername(), person.getId().toString(), person.getName(),
       person.getMiddleName(), person.getLastName(), person.getBirthday()
     );
-  }
-
-  public record InitStudentsInfoRequest(
-    String groupName,
-    List<String> peopleLogins
-  ) {
   }
 
   public record InitTeachersInfoRequest(

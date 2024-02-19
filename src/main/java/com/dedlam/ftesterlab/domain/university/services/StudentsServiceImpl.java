@@ -60,4 +60,24 @@ public class StudentsServiceImpl implements StudentsService {
 
     return TRUE.equals(success);
   }
+
+  @Override
+  public boolean changeGroup(String newGroupName, List<Person> people) {
+    var peopleIds = people.stream().map(Person::getId).collect(Collectors.toSet());
+    var studentInfos = repository.findAllByStudentIdIn(peopleIds);
+    var studentInfoIds = studentInfos.stream().map(StudentInfo::getId).collect(Collectors.toSet());
+    return groupsService.bindStudentsToGroup(newGroupName, studentInfoIds);
+  }
+
+  @Override
+  public boolean removeFromGroup(List<Person> people) {
+    var peopleIds = people.stream().map(Person::getId).collect(Collectors.toSet());
+    var studentInfos = repository.findAllByStudentIdIn(peopleIds);
+
+    studentInfos.forEach(info -> info.setGroup(null));
+
+    repository.saveAll(studentInfos);
+
+    return true;
+  }
 }
