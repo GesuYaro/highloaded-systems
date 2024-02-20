@@ -3,42 +3,31 @@ package com.dedlam.ftesterlab.domain.people.services;
 import com.dedlam.ftesterlab.auth.models.DefaultUser;
 import com.dedlam.ftesterlab.domain.people.database.PeopleRepository;
 import com.dedlam.ftesterlab.domain.people.database.Person;
-import com.dedlam.ftesterlab.domain.people.database.contacts.Contact;
-import com.dedlam.ftesterlab.domain.people.database.contacts.PersonContactsInfo;
-import com.dedlam.ftesterlab.domain.people.database.contacts.PersonContactsInfoRepository;
 import com.dedlam.ftesterlab.domain.people.services.dto.PersonDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.UUID;
 
 @Service
 public class PeopleServiceImpl implements PeopleService {
   private final PeopleRepository repository;
-  private final PersonContactsInfoRepository contactsInfoRepository;
+  private final ContactsService contactsService;
   private final Logger logger;
 
 
-  PeopleServiceImpl(
-    PeopleRepository repository,
-    PersonContactsInfoRepository contactsInfoRepository,
-    Logger logger
-  ) {
+  public PeopleServiceImpl(PeopleRepository repository, ContactsService contactsService, Logger logger) {
     this.repository = repository;
-    this.contactsInfoRepository = contactsInfoRepository;
+    this.contactsService = contactsService;
     this.logger = logger;
   }
 
   @Autowired
-  public PeopleServiceImpl(PeopleRepository repository, PersonContactsInfoRepository contactsInfoRepository) {
-    this(repository, contactsInfoRepository, LoggerFactory.getLogger(PeopleServiceImpl.class));
+  public PeopleServiceImpl(PeopleRepository repository, ContactsService contactsService) {
+    this(repository, contactsService, LoggerFactory.getLogger(PeopleServiceImpl.class));
   }
 
   @Override
@@ -49,17 +38,12 @@ public class PeopleServiceImpl implements PeopleService {
     try {
       Person saved = repository.save(entity);
 
-      updateContacts(saved.getId(), Collections.emptyList());
+      contactsService.updateContacts(saved.getId(), Collections.emptyList());
       return saved.getId();
     } catch (RuntimeException e) {
       logger.warn("Can't create person", e);
       return null;
     }
-  }
-
-  @Override
-  public List<Person> people() {
-    return repository.findAll();
   }
 
   @Override
@@ -98,42 +82,4 @@ public class PeopleServiceImpl implements PeopleService {
       return false;
     }
   }
-
-  @Override
-  public void delete(UUID id) {
-    boolean exists = repository.existsById(id);
-    if (exists) {
-      repository.deleteById(id);
-    } else {
-      var msg = String.format("Person with id='%s' does not exists during delete operation", id);
-      logger.warn(msg);
-    }
-  }
-
-  @Override
-  public boolean updateContacts(UUID personId, List<Contact> contacts) {
-    contacts.forEach(c -> c.setId(null));
-
-    PersonContactsInfo contactsInfo = contactsInfoRepository.findByPerson_Id(personId);
-    if (contactsInfo == null) {
-      var person = new Person();
-      person.setId(personId);
-      contactsInfo = new PersonContactsInfo(null, person, Collections.emptyList());
-    }
-
-    List<Contact> existingContacts = contactsInfo.getContacts();
-    existingContacts.clear();
-    existingContacts.addAll(contacts);
-
-    PersonContactsInfo savedEntity = contactsInfoRepository.save(contactsInfo);
-
-    return true;
-  }
-
-  private Page<Person> page(int pageNumber, int pageSize) {
-    var pageRequest = PageRequest.of(pageNumber, pageSize);
-
-    return repository.findAll(pageRequest);
-  }
-
 }
