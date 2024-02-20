@@ -34,7 +34,7 @@ public class Question {
     private List<Answer> answers;
 
     @ManyToOne
-    @JoinColumn(name = "testId")
+    @JoinColumn(name = "deadlineId")
     private Test test;
 
     @Override

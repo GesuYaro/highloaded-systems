@@ -1,13 +1,16 @@
 package com.dedlam.ftesterlab.domain.tests.mappers;
 
+import com.dedlam.ftesterlab.domain.tests.models.Answer;
+import com.dedlam.ftesterlab.domain.tests.models.Question;
 import com.dedlam.ftesterlab.domain.tests.models.Test;
-import com.dedlam.ftesterlab.domain.tests.services.dto.AnswerView;
-import com.dedlam.ftesterlab.domain.tests.services.dto.QuestionView;
-import com.dedlam.ftesterlab.domain.tests.services.dto.TestView;
+import com.dedlam.ftesterlab.domain.tests.models.TestResult;
+import com.dedlam.ftesterlab.domain.tests.services.dto.*;
 import com.dedlam.ftesterlab.domain.university.models.Subject;
 import com.dedlam.ftesterlab.domain.university.services.dto.SubjectView;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import static com.dedlam.ftesterlab.domain.tests.models.Question.QuestionType.OPEN;
 
 @Component
 @NoArgsConstructor
@@ -38,6 +41,53 @@ public class TestMapper {
                 test.getDuration(),
                 test.getIsOpen(),
                 questions
+        );
+    }
+
+    public TestWithTestResultView toTestWithTestResultView(TestWithTestResult testWithTestResult) {
+        return new TestWithTestResultView(
+                toTestStudentView(testWithTestResult.test()),
+                toTestResultView(testWithTestResult.testResult())
+        );
+    }
+
+    public TestResultView toTestResultView(TestResult testResult) {
+        return new TestResultView(
+                testResult.getId(),
+                testResult.getDeadline().getDeadline(),
+                testResult.getResult(),
+                testResult.getStartedAt(),
+                testResult.getFinishedAt()
+        );
+    }
+
+    private TestStudentView toTestStudentView(Test test) {
+        return new TestStudentView(
+                test.getId(),
+                test.getName(),
+                toSubjectView(test.getSubject()),
+                test.getDuration(),
+                test.getIsOpen(),
+                test.getQuestions().stream().map(this::toQuestionStudentView).toList()
+        );
+    }
+
+    private QuestionStudentView toQuestionStudentView(Question question) {
+        var answers = question.getQuestionType() == OPEN
+                ? null
+                : question.getAnswers().stream().map(this::toAnswerStudentView).toList();
+        return new QuestionStudentView(
+                question.getId(),
+                question.getDescription(),
+                question.getQuestionType(),
+                answers
+        );
+    }
+
+    private AnswerStudentView toAnswerStudentView(Answer answer) {
+        return new AnswerStudentView(
+                answer.getId(),
+                answer.getDescription()
         );
     }
 
