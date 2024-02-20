@@ -36,6 +36,7 @@ public class TestMapper {
                 test.getName(),
                 toSubjectView(test.getSubject()),
                 test.getDuration(),
+                test.getIsOpen(),
                 questions
         );
     }

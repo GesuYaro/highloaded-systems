@@ -4,6 +4,7 @@ import com.dedlam.ftesterlab.auth.database.UsersRepository;
 import com.dedlam.ftesterlab.controllers.BaseController;
 import com.dedlam.ftesterlab.domain.people.services.PeopleService;
 import com.dedlam.ftesterlab.domain.tests.services.TestService;
+import com.dedlam.ftesterlab.domain.tests.services.dto.TestChangeStateDto;
 import com.dedlam.ftesterlab.domain.tests.services.dto.TestCreateDto;
 import com.dedlam.ftesterlab.domain.tests.services.dto.TestSearchDto;
 import com.dedlam.ftesterlab.domain.tests.services.dto.TestView;
@@ -53,6 +54,12 @@ public class TeachersController extends BaseController {
     @GetMapping("/tests")
     public Page<TestView> tests(TestSearchDto testSearchDto, Pageable pageable) {
         return testService.tests(testSearchDto, pageable).map(testMapper::toTestView);
+    }
+
+    @PatchMapping("/tests")
+    public TestView changeTestState(@RequestBody TestChangeStateDto changeStateDto) {
+        var user = person();
+        return testMapper.toTestView(testService.changeTestOpenState(changeStateDto, user));
     }
 
     private static SubjectView toSubjectView(Subject subject) {
