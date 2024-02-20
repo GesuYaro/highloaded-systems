@@ -76,17 +76,17 @@
             <column name="student_id" type="UUID">
                 <constraints nullable="false"/>
             </column>
-            <column name="test_id" type="UUID">
+            <column name="deadline_id" type="UUID">
                 <constraints nullable="false"/>
             </column>
-            <column name="result" type="smallint">
-                <constraints nullable="false"/>
+            <column name="result" type="bigint">
+                <constraints nullable="true"/>
             </column>
             <column name="started_at" type="java.sql.types.timestamp_with_timezone">
                 <constraints nullable="false"/>
             </column>
             <column name="finished_at" type="java.sql.types.timestamp_with_timezone">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
         </createTable>
 

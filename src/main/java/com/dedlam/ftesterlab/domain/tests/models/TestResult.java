@@ -26,11 +26,11 @@ public class TestResult {
     private StudentInfo student;
 
     @ManyToOne
-    @JoinColumn(name = "testId")
-    private Test test;
+    @JoinColumn(name = "deadlineId")
+    private Deadline deadline;
 
     @Column(name = "result")
-    private Short result;
+    private Long result;
 
     @Column(name = "started_at")
     private ZonedDateTime startedAt;
