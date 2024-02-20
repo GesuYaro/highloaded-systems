@@ -1,6 +1,7 @@
 package com.dedlam.ftesterlab.domain.tests.models;
 
 import com.dedlam.ftesterlab.domain.university.models.Subject;
+import com.dedlam.ftesterlab.domain.university.models.TeacherInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,6 +41,13 @@ public class Test {
 
   @Column(name = "duration")
   private Duration duration;
+
+  @Column(name = "is_open")
+  private Boolean isOpen;
+
+  @ManyToOne
+  @JoinColumn(name = "teacher_id")
+  private TeacherInfo teacher;
 
   @Override
   public final boolean equals(Object o) {

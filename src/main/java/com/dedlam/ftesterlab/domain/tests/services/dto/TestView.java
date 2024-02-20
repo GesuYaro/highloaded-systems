@@ -11,6 +11,7 @@ public record TestView(
         String name,
         SubjectView subject,
         Duration duration,
+        Boolean isOpen,
         List<QuestionView> questions
 ) {
 }
