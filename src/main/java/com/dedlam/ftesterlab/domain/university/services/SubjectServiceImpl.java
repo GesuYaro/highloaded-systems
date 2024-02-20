@@ -1,6 +1,7 @@
 package com.dedlam.ftesterlab.domain.university.services;
 
 import com.dedlam.ftesterlab.auth.database.UsersRepository;
+import com.dedlam.ftesterlab.domain.people.database.Person;
 import com.dedlam.ftesterlab.domain.university.services.dto.SubjectCreateDto;
 import com.dedlam.ftesterlab.domain.university.database.SubjectRepository;
 import com.dedlam.ftesterlab.domain.university.database.TeachersInfoRepository;
@@ -23,26 +24,18 @@ public class SubjectServiceImpl implements SubjectService {
 
     private final SubjectRepository subjectRepository;
     private final TeachersInfoRepository teachersInfoRepository;
-    private final UsersRepository usersRepository;
 
     @Override
     @Transactional
-    public Subject create(SubjectCreateDto createDto, String username) throws AuthException {
-        var ownerId = getOwnerId(username);
-        var owner = teachersInfoRepository.findByTeacher_User_Id(ownerId).orElseThrow(() -> new BaseException(NOT_FOUND));
-        var entity = new Subject(null, createDto.name(), owner);
+    public Subject create(SubjectCreateDto createDto, Person owner) {
+        var ownerTeacherInfo = teachersInfoRepository.findByTeacher_Id(owner.getId()).orElseThrow(() -> new BaseException(NOT_FOUND));
+        var entity = new Subject(null, createDto.name(), ownerTeacherInfo);
         return subjectRepository.save(entity);
     }
 
     @Override
     @Transactional
-    public Page<Subject> subjects(String username, Pageable pageable) throws AuthException {
-        var ownerId = getOwnerId(username);
-        return subjectRepository.findByTeacher_Teacher_Id(ownerId, pageable);
-    }
-
-    private UUID getOwnerId(String username) throws AuthException {
-        var userDetails = usersRepository.findUserByUsername(username).orElseThrow(() -> new AuthException("Can't find user"));
-        return userDetails.getId();
+    public Page<Subject> subjects(Person owner, Pageable pageable) {
+        return subjectRepository.findByTeacher_Teacher_Id(owner.getId(), pageable);
     }
 }
