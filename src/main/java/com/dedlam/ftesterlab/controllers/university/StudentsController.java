@@ -55,8 +55,6 @@ public class StudentsController extends BaseController {
     return view == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(view);
   }
 
-
-
   public record StudentInfoView(
     String groupName,
     int grade

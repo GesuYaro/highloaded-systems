@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -34,11 +35,13 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
+    @Transactional
     public Test createTest(TestCreateDto createDto, Person owner) {
         return testRepository.save(toEntity(createDto, owner.getId()));
     }
 
     @Override
+    @Transactional
     public Test changeTestOpenState(TestChangeStateDto changeStateDto, Person owner) {
         var test = testRepository.findById(changeStateDto.testId())
                 .orElseThrow(() -> new BaseException("test not found", NOT_FOUND));

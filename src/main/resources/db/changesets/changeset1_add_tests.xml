@@ -71,7 +71,7 @@
 
         <createTable tableName="test_results">
             <column name="id" type="UUID">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_answers"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_test_results"/>
             </column>
             <column name="student_id" type="UUID">
                 <constraints nullable="false"/>
