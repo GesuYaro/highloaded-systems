@@ -160,6 +160,7 @@ class PeopleServiceImplTest {
       id,
       "Name " + id, "Middle name " + id, "Last name " + id,
       LocalDate.parse("2023-12-12"),
-      user);
+      user
+    );
   }
 }
