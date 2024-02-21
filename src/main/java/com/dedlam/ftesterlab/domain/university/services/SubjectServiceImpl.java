@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static com.dedlam.ftesterlab.utils.exceptions.ExceptionType.BAD_REQUEST;
 import static com.dedlam.ftesterlab.utils.exceptions.ExceptionType.NOT_FOUND;
 
 @Service
@@ -29,6 +30,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Transactional
     public Subject create(SubjectCreateDto createDto, Person owner) {
         var ownerTeacherInfo = teachersInfoRepository.findByTeacher_Id(owner.getId()).orElseThrow(() -> new BaseException(NOT_FOUND));
+        if (subjectRepository.existsByName(createDto.name())) throw new BaseException("subject with name already exists", BAD_REQUEST);
         var entity = new Subject(null, createDto.name(), ownerTeacherInfo);
         return subjectRepository.save(entity);
     }

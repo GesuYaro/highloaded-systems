@@ -17,4 +17,6 @@ public interface SubjectRepository extends JpaRepository<Subject, UUID> {
     List<Subject> findAllByNameIn(Set<String> names);
 
     Optional<Subject> findByIdAndTeacher_Teacher_Id(UUID id, UUID teacherId);
+
+    boolean existsByName(String name);
 }
