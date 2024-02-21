@@ -6,7 +6,7 @@ import com.dedlam.ftesterlab.domain.people.database.contacts.PersonContactsInfo;
 import com.dedlam.ftesterlab.domain.people.database.contacts.PersonContactsInfoRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +26,7 @@ public class ContactsServiceImpl implements ContactsService {
     if (contactsInfo == null) {
       var person = new Person();
       person.setId(personId);
-      contactsInfo = new PersonContactsInfo(null, person, Collections.emptyList());
+      contactsInfo = new PersonContactsInfo(null, person, new LinkedList<>());
     }
 
     List<Contact> existingContacts = contactsInfo.getContacts();
