@@ -22,7 +22,7 @@ logging:
     org:
       springframework:
         jdbc:
-          core=TRACE:
+          core: TRACE
 jwt:
   secret:
     access_decoded: ${JWT_SECRET_ACCESS_DECODED}
