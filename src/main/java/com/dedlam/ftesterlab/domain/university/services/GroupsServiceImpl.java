@@ -7,6 +7,10 @@ import com.dedlam.ftesterlab.domain.university.models.Group;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.OffsetScrollPosition;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Window;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -63,5 +67,10 @@ public class GroupsServiceImpl implements GroupsService {
 
       return true;
     }));
+  }
+
+  @Override
+  public Window<Group> groups(OffsetScrollPosition offsetScrollPosition) {
+    return repository.findByGradeNotNullOrderByNameAsc(offsetScrollPosition);
   }
 }
