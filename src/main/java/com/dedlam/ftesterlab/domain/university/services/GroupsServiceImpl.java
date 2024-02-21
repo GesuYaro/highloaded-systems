@@ -6,6 +6,7 @@ import com.dedlam.ftesterlab.domain.university.database.SubjectRepository;
 import com.dedlam.ftesterlab.domain.university.models.Group;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -18,17 +19,34 @@ import static java.lang.Boolean.TRUE;
 
 @Service
 public class GroupsServiceImpl implements GroupsService {
-  private static final Logger logger = LoggerFactory.getLogger(GroupsService.class);
+  private final Logger logger;
   private final StudentsInfoRepository studentsInfoRepository;
   private final GroupsRepository repository;
   private final TransactionTemplate transactionTemplate;
   private final SubjectRepository subjectRepository;
 
-  public GroupsServiceImpl(StudentsInfoRepository studentsInfoRepository, GroupsRepository repository, TransactionTemplate transactionTemplate, SubjectRepository subjectRepository) {
+  public GroupsServiceImpl(
+    StudentsInfoRepository studentsInfoRepository,
+    GroupsRepository repository,
+    TransactionTemplate transactionTemplate,
+    SubjectRepository subjectRepository,
+    Logger logger
+  ) {
     this.studentsInfoRepository = studentsInfoRepository;
     this.repository = repository;
     this.transactionTemplate = transactionTemplate;
     this.subjectRepository = subjectRepository;
+    this.logger = logger;
+  }
+
+  @Autowired
+  public GroupsServiceImpl(
+    StudentsInfoRepository studentsInfoRepository,
+    GroupsRepository repository,
+    TransactionTemplate transactionTemplate,
+    SubjectRepository subjectRepository
+  ) {
+    this(studentsInfoRepository, repository, transactionTemplate, subjectRepository, LoggerFactory.getLogger(GroupsService.class));
   }
 
   @Override
@@ -47,7 +65,14 @@ public class GroupsServiceImpl implements GroupsService {
   @Override
   public boolean bindStudentsToGroup(String groupName, Set<UUID> studentsInfoIds) {
     return TRUE.equals(transactionTemplate.execute((ctx) -> {
-      var group = repository.findByName(groupName).orElseThrow(() -> new RuntimeException("TODO"));
+      var groupOpt = repository.findByName(groupName);
+      if (groupOpt.isEmpty()) {
+        var msg = String.format("Can't find group with name='%s'", groupName);
+        logger.warn(msg);
+        return false;
+      }
+
+      var group = groupOpt.get();
       var studentsInfo = studentsInfoRepository.findAllByIdIn(studentsInfoIds);
 
       group.getStudents().addAll(studentsInfo);
@@ -56,7 +81,7 @@ public class GroupsServiceImpl implements GroupsService {
       try {
         repository.save(group);
       } catch (DataAccessException e) {
-        logger.error("Can't save group");
+        logger.error("Can't save group", e);
         ctx.setRollbackOnly();
         return false;
       }
