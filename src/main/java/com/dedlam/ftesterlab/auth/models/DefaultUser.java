@@ -43,13 +43,11 @@ public class DefaultUser implements UserDetails {
     return List.of(DEFAULT_USER);
   }
 
-  @Transient
   @Override
   public String getPassword() {
     return password;
   }
 
-  @Transient
   @Override
   public String getUsername() {
     return username;
