@@ -9,6 +9,7 @@ services:
       JWT_SECRET_ACCESS: ${JWT_SECRET_ACCESS}
       JWT_SECRET_REFRESH_DECODED: ${JWT_SECRET_REFRESH_DECODED}
       JWT_SECRET_REFRESH: ${JWT_SECRET_REFRESH}
+#      SPRING_PROFILES_ACTIVE: preprod
     build:
       context: .
       dockerfile: Dockerfile
@@ -18,9 +19,10 @@ services:
       - postgres
   postgres:
     image: postgres:13.3
+    container_name: postgres
     environment:
-      POSTGRES_DB: "postgres"
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: user
     ports:
       - "5432:5432"
