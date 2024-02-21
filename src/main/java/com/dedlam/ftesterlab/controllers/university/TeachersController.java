@@ -14,6 +14,7 @@ import com.dedlam.ftesterlab.domain.university.services.dto.SubjectCreateDto;
 import com.dedlam.ftesterlab.domain.university.services.dto.SubjectView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -44,7 +45,7 @@ public class TeachersController extends BaseController {
     }
 
     @PostMapping("/subjects")
-    public SubjectView createSubject(@RequestBody SubjectCreateDto createDto) {
+    public SubjectView createSubject(@RequestBody @Validated SubjectCreateDto createDto) {
         var user = person();
         return toSubjectView(subjectService.create(createDto, user));
     }
@@ -56,18 +57,18 @@ public class TeachersController extends BaseController {
     }
 
     @PostMapping("/tests")
-    public TestView createTest(@RequestBody TestCreateDto testCreateDto) {
+    public TestView createTest(@RequestBody @Validated TestCreateDto testCreateDto) {
         var user = person();
         return testMapper.toTestView(testService.createTest(testCreateDto, user));
     }
 
     @GetMapping("/tests")
-    public Page<TestView> tests(TestSearchDto testSearchDto, Pageable pageable) {
+    public Page<TestView> tests(@Validated TestSearchDto testSearchDto, Pageable pageable) {
         return testService.tests(testSearchDto, pageable).map(testMapper::toTestView);
     }
 
     @PatchMapping("/tests")
-    public TestView changeTestState(@RequestBody TestChangeStateDto changeStateDto) {
+    public TestView changeTestState(@RequestBody @Validated TestChangeStateDto changeStateDto) {
         var user = person();
         return testMapper.toTestView(testService.changeTestOpenState(changeStateDto, user));
     }
@@ -79,7 +80,7 @@ public class TeachersController extends BaseController {
     }
 
     @PostMapping("/deadlines")
-    public DeadlineView createDeadline(@RequestBody DeadlineCreateDto createDto) {
+    public DeadlineView createDeadline(@RequestBody @Validated DeadlineCreateDto createDto) {
         var user = person();
         return deadlineMapper.toDeadlineView(deadlineService.createDeadline(createDto, user));
     }
