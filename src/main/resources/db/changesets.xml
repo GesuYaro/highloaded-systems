@@ -6,7 +6,5 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <include file="changesets/initial.xml" relativeToChangelogFile="true"/>
-    <include file="changesets/changeset1_add_tests.xml" relativeToChangelogFile="true"/>
-    <include file="changesets/changeset2_add_deadlines.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
