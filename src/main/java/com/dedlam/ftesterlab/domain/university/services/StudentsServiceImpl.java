@@ -5,6 +5,7 @@ import com.dedlam.ftesterlab.domain.university.database.StudentsInfoRepository;
 import com.dedlam.ftesterlab.domain.university.models.StudentInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -16,16 +17,22 @@ import static java.lang.Boolean.TRUE;
 
 @Service
 public class StudentsServiceImpl implements StudentsService {
-  private static final Logger logger = LoggerFactory.getLogger(StudentsService.class);
 
   private final StudentsInfoRepository repository;
   private final GroupsService groupsService;
   private final TransactionTemplate transactionTemplate;
+  private final Logger logger;
 
-  public StudentsServiceImpl(StudentsInfoRepository repository, GroupsService groupsService, TransactionTemplate transactionTemplate) {
+  public StudentsServiceImpl(StudentsInfoRepository repository, GroupsService groupsService, TransactionTemplate transactionTemplate, Logger logger) {
     this.repository = repository;
     this.groupsService = groupsService;
     this.transactionTemplate = transactionTemplate;
+    this.logger = logger;
+  }
+
+  @Autowired
+  public StudentsServiceImpl(StudentsInfoRepository repository, GroupsService groupsService, TransactionTemplate transactionTemplate) {
+    this(repository, groupsService, transactionTemplate, LoggerFactory.getLogger(StudentsService.class));
   }
 
 
@@ -41,7 +48,7 @@ public class StudentsServiceImpl implements StudentsService {
       try {
         savedStudents = repository.saveAll(studentsInfo);
       } catch (DataAccessException e) {
-        logger.error("Can't create students -> ROLLBACK");
+        logger.error("Can't create students -> ROLLBACK", e);
         ctx.setRollbackOnly();
         return false;
       }
