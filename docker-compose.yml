@@ -2,6 +2,13 @@ version: '3.8'
 services:
   client-backend:
     image: client:0.0.1
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET_ACCESS_DECODED: ${JWT_SECRET_ACCESS_DECODED}
+      JWT_SECRET_ACCESS: ${JWT_SECRET_ACCESS}
+      JWT_SECRET_REFRESH_DECODED: ${JWT_SECRET_REFRESH_DECODED}
+      JWT_SECRET_REFRESH: ${JWT_SECRET_REFRESH}
     build:
       context: .
       dockerfile: Dockerfile
@@ -13,7 +20,7 @@ services:
     image: postgres:13.3
     environment:
       POSTGRES_DB: "postgres"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "user"
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
