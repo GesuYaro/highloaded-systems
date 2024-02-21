@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
@@ -42,13 +43,13 @@ public class StudentsController extends BaseController {
   }
 
   @PostMapping("/tests")
-  public TestWithTestResultView startTest(@RequestBody StartTestDto startTestDto) {
+  public TestWithTestResultView startTest(@RequestBody @Validated StartTestDto startTestDto) {
     var user = person();
     return testMapper.toTestWithTestResultView(studentTestService.startTest(startTestDto, user));
   }
 
   @PostMapping("/tests/submit")
-  public TestResultView submitTest(@RequestBody TestSubmitDto testSubmitDto) {
+  public TestResultView submitTest(@RequestBody @Validated TestSubmitDto testSubmitDto) {
     var user = person();
     return testMapper.toTestResultView(studentTestService.submitTest(testSubmitDto, user));
   }
