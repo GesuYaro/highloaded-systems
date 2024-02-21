@@ -58,17 +58,11 @@ public class PeopleServiceImpl implements PeopleService {
 
   @Override
   public boolean update(UUID id, PersonDto request) {
-    var notExistingPersonMsg = String.format("Can't find person by id='%s'", id);
     var existing = repository.findById(id);
 
-    try {
-      boolean exists = existing.isPresent();
-      if (!exists) {
-        logger.warn(notExistingPersonMsg);
-        return false;
-      }
-    } catch (RuntimeException e) {
-      logger.warn(notExistingPersonMsg, e);
+    if (existing.isEmpty()) {
+      var msg = String.format("Can't find person by id='%s'", id);
+      logger.warn(msg);
       return false;
     }
 
