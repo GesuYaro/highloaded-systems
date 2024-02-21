@@ -1,0 +1,33 @@
+spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2
+      settings:
+        web-allow-others: true
+  datasource:
+    url: jdbc:postgresql://postgres:5432/postgres
+#    username: ${DB_USERNAME}
+#    password: ${DB_PASSWORD}
+    username: postgres
+    password: user
+    driverClassName: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    enabled: true
+    default-schema: "public"
+    change-log: classpath:db/changesets.xml
+logging:
+  level:
+    org:
+      springframework:
+        jdbc:
+          core=TRACE:
+jwt:
+  secret:
+    access_decoded: ${JWT_SECRET_ACCESS_DECODED}
+    access: ${JWT_SECRET_ACCESS}
+    refresh_decoded: ${JWT_SECRET_REFRESH_DECODED}
+    refresh: ${JWT_SECRET_REFRESH}
