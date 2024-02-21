@@ -7,20 +7,21 @@ spring:
 #        web-admin-password: 123456789012
         web-allow-others: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: user
-    driverClassName: org.postgresql.Driver
-  #    url: jdbc:h2:mem:testdb
-#    driver-class-name: org.h2.Driver
-#    username: sa
-#    password: password
+#    url: jdbc:postgresql://localhost:5432/postgres
+#    username: postgres
+#    password: user
+#    driverClassName: org.postgresql.Driver
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
   jpa:
     hibernate:
-      ddl-auto: none
-#      ddl-auto: create
+#      ddl-auto: none
+      ddl-auto: create
   liquibase:
-    enabled: true
+#    enabled: true
+    enabled: false
     default-schema: "public"
     change-log: classpath:db/changesets.xml
 
