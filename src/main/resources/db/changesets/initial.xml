@@ -1,10 +1,21 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <changeSet id="2023120760424" author="Mikhail">
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.25.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1708476858720-1" author="Company">
+        <createTable tableName="answers">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_answers"/>
+            </column>
+            <column name="question_id" type="UUID"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="is_correct" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1708476858720-2" author="Company">
         <createTable tableName="contacts">
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_contacts"/>
@@ -16,7 +27,41 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1708476858720-3" author="Company">
+        <createTable tableName="deadlines">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_deadlines"/>
+            </column>
+            <column name="group_id" type="UUID"/>
+            <column name="test_id" type="UUID"/>
+            <column name="deadline" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1708476858720-4" author="Company">
+        <createTable tableName="groups">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_groups"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="grade" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1708476858720-5" author="Company">
+        <createTable tableName="groups_to_subjects">
+            <column name="group_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1708476858720-6" author="Company">
         <createTable tableName="people">
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_people"/>
@@ -31,44 +76,225 @@
             <column name="birthday" type="DATE">
                 <constraints nullable="false"/>
             </column>
+            <column name="user_id" type="UUID"/>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1708476858720-7" author="Company">
         <createTable tableName="person_contacts_info">
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person_contacts_info"/>
             </column>
             <column name="person_id" type="UUID">
-                <constraints nullable="false" unique="true"/>
+                <constraints nullable="false"/>
             </column>
         </createTable>
+    </changeSet>
+    <changeSet id="1708476858720-8" author="Company">
         <createTable tableName="person_contacts_info_to_contact">
             <column name="contact_id" type="UUID">
-                <constraints nullable="false" unique="true"/>
+                <constraints nullable="false"/>
             </column>
             <column name="person_contact_info_id" type="UUID">
                 <constraints nullable="false"/>
             </column>
         </createTable>
-
-        <addForeignKeyConstraint baseTableName="person_contacts_info" baseColumnNames="person_id"
-                                 constraintName="fk1" referencedTableName="people" referencedColumnNames="id"
-                                 onUpdate="CASCADE" onDelete="CASCADE"/>
-
-        <addForeignKeyConstraint baseTableName="person_contacts_info_to_contact" baseColumnNames="person_contact_info_id"
-                                 constraintName="fk2" referencedTableName="person_contacts_info" referencedColumnNames="id"
-                                 onUpdate="CASCADE" onDelete="CASCADE"/>
-
-        <addForeignKeyConstraint baseTableName="person_contacts_info_to_contact" baseColumnNames="contact_id"
-                                 constraintName="fk3" referencedTableName="contacts" referencedColumnNames="id"
-                                 onUpdate="CASCADE" onDelete="CASCADE"/>
-
+    </changeSet>
+    <changeSet id="1708476858720-9" author="Company">
+        <createTable tableName="questions">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_questions"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="type" type="VARCHAR(255)"/>
+            <column name="deadline_id" type="UUID"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1708476858720-10" author="Company">
         <createTable tableName="students_info">
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_students_info"/>
             </column>
+            <column name="student_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_id" type="UUID"/>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="id" baseTableName="students_info"
-                                 constraintName="FK_STUDENTS_INFO_ON_ID" referencedColumnNames="id"
+    </changeSet>
+    <changeSet id="1708476858720-11" author="Company">
+        <createTable tableName="subjects">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_subjects"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="teacher_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1708476858720-12" author="Company">
+        <createTable tableName="teachers_info">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teachers_info"/>
+            </column>
+            <column name="teacher_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1708476858720-13" author="Company">
+        <createTable tableName="test_results">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_test_results"/>
+            </column>
+            <column name="student_id" type="UUID"/>
+            <column name="deadline_id" type="UUID"/>
+            <column name="result" type="BIGINT"/>
+            <column name="started_at" type="timestamp"/>
+            <column name="finished_at" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1708476858720-14" author="Company">
+        <createTable tableName="tests">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_tests"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="subject_id" type="UUID"/>
+            <column name="duration" type="BIGINT"/>
+            <column name="is_open" type="BOOLEAN"/>
+            <column name="teacher_id" type="UUID"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1708476858720-15" author="Company">
+        <createTable tableName="users">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
+            </column>
+            <column name="dtype" type="VARCHAR(31)"/>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1708476858720-16" author="Company">
+        <addUniqueConstraint columnNames="name" constraintName="uc_groups_name" tableName="groups"/>
+    </changeSet>
+    <changeSet id="1708476858720-17" author="Company">
+        <addUniqueConstraint columnNames="user_id" constraintName="uc_people_user" tableName="people"/>
+    </changeSet>
+    <changeSet id="1708476858720-18" author="Company">
+        <addUniqueConstraint columnNames="person_id" constraintName="uc_person_contacts_info_person"
+                             tableName="person_contacts_info"/>
+    </changeSet>
+    <changeSet id="1708476858720-19" author="Company">
+        <addUniqueConstraint columnNames="contact_id" constraintName="uc_person_contacts_info_to_contact_contact"
+                             tableName="person_contacts_info_to_contact"/>
+    </changeSet>
+    <changeSet id="1708476858720-20" author="Company">
+        <addUniqueConstraint columnNames="student_id" constraintName="uc_students_info_student"
+                             tableName="students_info"/>
+    </changeSet>
+    <changeSet id="1708476858720-21" author="Company">
+        <addUniqueConstraint columnNames="name" constraintName="uc_subjects_name" tableName="subjects"/>
+    </changeSet>
+    <changeSet id="1708476858720-22" author="Company">
+        <addUniqueConstraint columnNames="teacher_id" constraintName="uc_teachers_info_teacher"
+                             tableName="teachers_info"/>
+    </changeSet>
+    <changeSet id="1708476858720-23" author="Company">
+        <addUniqueConstraint columnNames="username" constraintName="uc_users_username" tableName="users"/>
+    </changeSet>
+    <changeSet id="1708476858720-24" author="Company">
+        <addForeignKeyConstraint
+                baseColumnNames="person_id" baseTableName="person_contacts_info"
+                constraintName="FK_PERSON_CONTACTS_INFO_ON_PEOPLE"
+                referencedColumnNames="id" referencedTableName="people"/>
+    </changeSet>
+    <changeSet id="1708476858720-25" author="Company">
+        <addForeignKeyConstraint baseColumnNames="question_id" baseTableName="answers"
+                                 constraintName="FK_ANSWERS_ON_QUESTION" referencedColumnNames="id"
+                                 referencedTableName="questions"/>
+    </changeSet>
+    <changeSet id="1708476858720-26" author="Company">
+        <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="deadlines"
+                                 constraintName="FK_DEADLINES_ON_GROUP" referencedColumnNames="id"
+                                 referencedTableName="groups"/>
+    </changeSet>
+    <changeSet id="1708476858720-27" author="Company">
+        <addForeignKeyConstraint baseColumnNames="test_id" baseTableName="deadlines"
+                                 constraintName="FK_DEADLINES_ON_TEST" referencedColumnNames="id"
+                                 referencedTableName="tests"/>
+    </changeSet>
+    <changeSet id="1708476858720-28" author="Company">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="people" constraintName="FK_PEOPLE_ON_USER"
+                                 referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1708476858720-29" author="Company">
+        <addForeignKeyConstraint baseColumnNames="deadline_id" baseTableName="questions"
+                                 constraintName="FK_QUESTIONS_ON_DEADLINEID" referencedColumnNames="id"
+                                 referencedTableName="tests"/>
+    </changeSet>
+    <changeSet id="1708476858720-30" author="Company">
+        <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="students_info"
+                                 constraintName="FK_STUDENTS_INFO_ON_GROUP" referencedColumnNames="id"
+                                 referencedTableName="groups"/>
+    </changeSet>
+    <changeSet id="1708476858720-31" author="Company">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="students_info"
+                                 constraintName="FK_STUDENTS_INFO_ON_STUDENT" referencedColumnNames="id"
                                  referencedTableName="people"/>
     </changeSet>
+    <changeSet id="1708476858720-32" author="Company">
+        <addForeignKeyConstraint baseColumnNames="teacher_id" baseTableName="subjects"
+                                 constraintName="FK_SUBJECTS_ON_TEACHER" referencedColumnNames="id"
+                                 referencedTableName="teachers_info"/>
+    </changeSet>
+    <changeSet id="1708476858720-33" author="Company">
+        <addForeignKeyConstraint baseColumnNames="teacher_id" baseTableName="teachers_info"
+                                 constraintName="FK_TEACHERS_INFO_ON_TEACHER" referencedColumnNames="id"
+                                 referencedTableName="people"/>
+    </changeSet>
+    <changeSet id="1708476858720-34" author="Company">
+        <addForeignKeyConstraint baseColumnNames="subject_id" baseTableName="tests" constraintName="FK_TESTS_ON_SUBJECT"
+                                 referencedColumnNames="id" referencedTableName="subjects"/>
+    </changeSet>
+    <changeSet id="1708476858720-35" author="Company">
+        <addForeignKeyConstraint baseColumnNames="teacher_id" baseTableName="tests" constraintName="FK_TESTS_ON_TEACHER"
+                                 referencedColumnNames="id" referencedTableName="teachers_info"/>
+    </changeSet>
+    <changeSet id="1708476858720-36" author="Company">
+        <addForeignKeyConstraint baseColumnNames="deadline_id" baseTableName="test_results"
+                                 constraintName="FK_TEST_RESULTS_ON_DEADLINEID" referencedColumnNames="id"
+                                 referencedTableName="deadlines"/>
+    </changeSet>
+    <changeSet id="1708476858720-37" author="Company">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="test_results"
+                                 constraintName="FK_TEST_RESULTS_ON_STUDENT" referencedColumnNames="id"
+                                 referencedTableName="students_info"/>
+    </changeSet>
+    <changeSet id="1708476858720-38" author="Company">
+        <addForeignKeyConstraint baseColumnNames="contact_id" baseTableName="person_contacts_info_to_contact"
+                                 constraintName="SSPzbY" referencedColumnNames="id" referencedTableName="contacts"/>
+    </changeSet>
+    <changeSet id="1708476858720-39" author="Company">
+        <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="groups_to_subjects"
+                                 constraintName="fk_grotosub_on_group" referencedColumnNames="id"
+                                 referencedTableName="groups"/>
+    </changeSet>
+    <changeSet id="1708476858720-40" author="Company">
+        <addForeignKeyConstraint baseColumnNames="subject_id" baseTableName="groups_to_subjects"
+                                 constraintName="fk_grotosub_on_subject" referencedColumnNames="id"
+                                 referencedTableName="subjects"/>
+    </changeSet>
+    <changeSet id="1708476858720-41" author="Company">
+        <addForeignKeyConstraint baseColumnNames="person_contact_info_id"
+                                 baseTableName="person_contacts_info_to_contact" constraintName="phxV3l"
+                                 referencedColumnNames="id" referencedTableName="person_contacts_info"/>
+    </changeSet>
+
 </databaseChangeLog>

@@ -1,7 +1,6 @@
 package com.dedlam.ftesterlab.configuration;
 
 import com.dedlam.ftesterlab.auth.JwtFilter;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,7 +30,6 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     return http
       .csrf(csrf -> csrf
-        .ignoringRequestMatchers(PathRequest.toH2Console())
         .ignoringRequestMatchers(antMatcher("/h2/**"))
         .ignoringRequestMatchers(antMatcher("/**"))
       )
@@ -40,7 +38,7 @@ public class SecurityConfig {
       )
       .authorizeHttpRequests(
         auth -> auth
-          .requestMatchers(PathRequest.toH2Console()).permitAll()
+          .requestMatchers(antMatcher("/h2/**")).permitAll()
           .requestMatchers(antMatcher("/auth/login")).permitAll()
           .requestMatchers(antMatcher("/auth/token")).permitAll()
           .requestMatchers(antMatcher("/admin/**")).hasAuthority(ADMIN.getAuthority())

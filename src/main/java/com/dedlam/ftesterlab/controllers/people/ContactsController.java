@@ -1,54 +1,94 @@
 package com.dedlam.ftesterlab.controllers.people;
 
 import com.dedlam.ftesterlab.auth.database.UsersRepository;
+import com.dedlam.ftesterlab.controllers.BaseController;
 import com.dedlam.ftesterlab.domain.people.database.contacts.Contact;
 import com.dedlam.ftesterlab.domain.people.database.contacts.Contact.ContactType;
 import com.dedlam.ftesterlab.domain.people.database.contacts.PersonContactsInfoRepository;
+import com.dedlam.ftesterlab.domain.people.services.ContactsService;
 import com.dedlam.ftesterlab.domain.people.services.PeopleService;
-import jakarta.security.auth.message.AuthException;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
+
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 @RestController
 @RequestMapping("people")
-public class ContactsController {
-  private final PeopleService peopleService;
+public class ContactsController extends BaseController {
+  private final Logger logger;
+  private final ContactsService contactsService;
   private final PersonContactsInfoRepository contactsInfoRepository;
-  private final UsersRepository usersRepository;
 
-  public ContactsController(PeopleService peopleService, PersonContactsInfoRepository contactsInfoRepository, UsersRepository usersRepository) {
-    this.peopleService = peopleService;
+  public ContactsController(
+    UsersRepository usersRepository,
+    PeopleService peopleService,
+    ContactsService contactsService,
+    PersonContactsInfoRepository contactsInfoRepository,
+    Logger logger
+  ) {
+    super(usersRepository, peopleService);
+    this.contactsService = contactsService;
     this.contactsInfoRepository = contactsInfoRepository;
-    this.usersRepository = usersRepository;
+    this.logger = logger;
+  }
+
+  @Autowired
+  public ContactsController(
+    UsersRepository usersRepository,
+    PeopleService peopleService,
+    ContactsService contactsService,
+    PersonContactsInfoRepository contactsInfoRepository
+  ) {
+    this(usersRepository, peopleService, contactsService, contactsInfoRepository, LoggerFactory.getLogger(ContactsController.class));
   }
 
   @GetMapping("/contacts")
-  public List<ContactView> contacts() throws AuthException {
-    var personId = personId();
+  public ResponseEntity<?> contacts() {
+    var person = person();
+    if (person == null) {
+      var msg = composeNotExistencePersonMsg();
+      logger.warn(msg);
+      return new ResponseEntity<>(msg, UNPROCESSABLE_ENTITY);
+    }
 
-    return contactsInfoRepository.findByPerson_Id(personId).getContacts()
+    var personId = person.getId();
+
+    var contacts = contactsInfoRepository.findByPerson_Id(personId).getContacts()
       .stream()
       .map(ContactsController::contactView)
       .toList();
+
+    return ResponseEntity.ok(contacts);
   }
 
-  @PostMapping("/contacts")
-  public void addToPerson(@RequestBody List<ContactView> contacts) throws AuthException {
-    var personId = personId();
+  @PutMapping("/contacts")
+  public ResponseEntity<?> updateContacts(@RequestBody List<ContactView> contacts) {
+    var person = person();
+    if (person == null) {
+      var msg = composeNotExistencePersonMsg();
+      logger.warn(msg);
+      return new ResponseEntity<>(msg, UNPROCESSABLE_ENTITY);
+    }
+
+    var personId = person.getId();
     List<Contact> contactsReq = contacts.stream().map(c -> new Contact(null, c.type, c.value)).toList();
 
-    peopleService.bindContacts(personId, contactsReq);
+    contactsService.updateContacts(personId, contactsReq);
 
-    return;
+    return ResponseEntity.ok(null);
   }
 
-  private UUID personId() throws AuthException {
-    var username = SecurityContextHolder.getContext().getAuthentication().getName();
-    var userDetails = usersRepository.findUserByUsername(username).orElseThrow(() -> new AuthException("Can't find user"));
-    return peopleService.personByUserId(userDetails.getId()).getId();
+  private String composeNotExistencePersonMsg() {
+    var user = user();
+    return String.format(
+      "Can't get contacts info, because no person-info for user '%s' with id='%s'",
+      user.getUsername(), user.getId()
+    );
   }
 
   private static ContactView contactView(Contact contact) {

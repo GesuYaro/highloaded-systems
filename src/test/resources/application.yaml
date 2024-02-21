@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    own:
+      username: ${CONTAINER.USERNAME}
+      password: ${CONTAINER.PASSWORD}
+      url: ${CONTAINER.URL}
+  jpa:
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    enabled: true
+    default-schema: "public"
+    change-log: classpath:db/changesets.xml
+
+jwt:
+  secret:
+    access_decoded: secret-access-123456789012345678901234567890
+    access: c2VjcmV0LWFjY2Vzcy0xMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTA=
+    refresh_decoded: secret-refresh-123456789012345678901234567890
+    refresh: c2VjcmV0LXJlZnJlc2gtMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkw
+
+logging:
+  level:
+    com:
+      zaxxer:
+        hikari: DEBUG

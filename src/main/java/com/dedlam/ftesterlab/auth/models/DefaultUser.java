@@ -21,10 +21,10 @@ public class DefaultUser implements UserDetails {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @Column
+  @Column(nullable = false, unique = true)
   private String username;
 
-  @Column
+  @Column(nullable = false)
   private String password;
 
   public DefaultUser() {
@@ -43,13 +43,11 @@ public class DefaultUser implements UserDetails {
     return List.of(DEFAULT_USER);
   }
 
-  @Transient
   @Override
   public String getPassword() {
     return password;
   }
 
-  @Transient
   @Override
   public String getUsername() {
     return username;

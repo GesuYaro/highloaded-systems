@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  client-backend:
+    image: client:0.0.1
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET_ACCESS_DECODED: ${JWT_SECRET_ACCESS_DECODED}
+      JWT_SECRET_ACCESS: ${JWT_SECRET_ACCESS}
+      JWT_SECRET_REFRESH_DECODED: ${JWT_SECRET_REFRESH_DECODED}
+      JWT_SECRET_REFRESH: ${JWT_SECRET_REFRESH}
+#      SPRING_PROFILES_ACTIVE: preprod
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:13.3
+    container_name: postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: user
+    ports:
+      - "5432:5432"

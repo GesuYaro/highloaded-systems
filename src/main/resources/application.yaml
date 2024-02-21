@@ -1,9 +1,32 @@
 spring:
-  profiles:
-    active: dev
+  h2:
+    console:
+      enabled: true
+      path: /h2
+      settings:
+        web-allow-others: true
+  datasource:
+    url: jdbc:postgresql://postgres:5432/postgres
+    username: postgres
+    password: user
+    driverClassName: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: none
-    show-sql: true
   liquibase:
-    enabled: false
+    enabled: true
+    default-schema: "public"
+    change-log: classpath:db/changesets.xml
+
+jwt:
+  secret:
+    access_decoded: secret-access-123456789012345678901234567890
+    access: c2VjcmV0LWFjY2Vzcy0xMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTA=
+    refresh_decoded: secret-refresh-123456789012345678901234567890
+    refresh: c2VjcmV0LXJlZnJlc2gtMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkw
+
+logging:
+  level:
+    com:
+      zaxxer:
+        hikari: DEBUG
