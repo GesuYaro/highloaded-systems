@@ -1,6 +1,6 @@
 package com.dedlam.ftesterlab.controllers.admin;
 
-import com.dedlam.ftesterlab.auth.AuthServiceImpl;
+import com.dedlam.ftesterlab.auth.AuthService;
 import com.dedlam.ftesterlab.auth.dto.CreateUserRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 public class UsersManagingController {
   private static final Logger logger = LoggerFactory.getLogger(UsersManagingController.class);
 
-  private final AuthServiceImpl authService;
+  private final AuthService authService;
 
   @PostMapping("/registration/students")
   public ResponseEntity<?> registerStudent(@RequestBody RegisterUserRequest request) {

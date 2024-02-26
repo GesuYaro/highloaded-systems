@@ -1,6 +1,6 @@
 package com.dedlam.ftesterlab.controllers.people;
 
-import com.dedlam.ftesterlab.auth.database.UsersRepository;
+import com.dedlam.ftesterlab.auth.AuthService;
 import com.dedlam.ftesterlab.controllers.BaseController;
 import com.dedlam.ftesterlab.domain.people.database.contacts.Contact;
 import com.dedlam.ftesterlab.domain.people.database.contacts.Contact.ContactType;
@@ -9,7 +9,6 @@ import com.dedlam.ftesterlab.domain.people.services.ContactsService;
 import com.dedlam.ftesterlab.domain.people.services.PeopleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,27 +23,11 @@ public class ContactsController extends BaseController {
   private final ContactsService contactsService;
   private final PersonContactsInfoRepository contactsInfoRepository;
 
-  public ContactsController(
-    UsersRepository usersRepository,
-    PeopleService peopleService,
-    ContactsService contactsService,
-    PersonContactsInfoRepository contactsInfoRepository,
-    Logger logger
-  ) {
-    super(usersRepository, peopleService);
+  public ContactsController(PeopleService peopleService, AuthService authService, ContactsService contactsService, PersonContactsInfoRepository contactsInfoRepository) {
+    super(peopleService, authService);
+    this.logger = LoggerFactory.getLogger(ContactsController.class);
     this.contactsService = contactsService;
     this.contactsInfoRepository = contactsInfoRepository;
-    this.logger = logger;
-  }
-
-  @Autowired
-  public ContactsController(
-    UsersRepository usersRepository,
-    PeopleService peopleService,
-    ContactsService contactsService,
-    PersonContactsInfoRepository contactsInfoRepository
-  ) {
-    this(usersRepository, peopleService, contactsService, contactsInfoRepository, LoggerFactory.getLogger(ContactsController.class));
   }
 
   @GetMapping("/contacts")
@@ -87,7 +70,7 @@ public class ContactsController extends BaseController {
     var user = user();
     return String.format(
       "Can't get contacts info, because no person-info for user '%s' with id='%s'",
-      user.getUsername(), user.getId()
+      user.username(), user.id()
     );
   }
 
