@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -76,7 +77,7 @@ public class StudentsManagingController {
   }
 
   private @Nullable String validatePeopleForStudentsAccount(List<Person> people, Set<String> logins) {
-    var users = people.stream().map(Person::getUserId).map(userService::user).toList();
+    var users = people.stream().map(Person::getUserId).map(userService::user).filter(Objects::nonNull).toList();
 
     if (people.size() != logins.size()) {
       var foundLogins = users.stream().map(User::username).collect(Collectors.toSet());

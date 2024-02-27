@@ -17,15 +17,23 @@ public class RemotePeopleService implements PeopleService {
   }
 
   @Override
-  public UUID create(UUID userId, PersonDto person) {
+  public @Nullable UUID create(UUID userId, PersonDto person) {
     var request = new CreatePersonRequest(userId, person);
 
-    return peopleServiceClient.createPerson(request);
+    try {
+      return peopleServiceClient.createPerson(request);
+    } catch (FeignException e) {
+      return null;
+    }
   }
 
   @Override
-  public Person person(UUID id) {
-    return peopleServiceClient.getPersonInfo(id);
+  public @Nullable Person person(UUID id) {
+    try {
+      return peopleServiceClient.getPersonInfo(id);
+    } catch (FeignException.NotFound e) {
+      return null;
+    }
   }
 
   @Override
@@ -33,9 +41,8 @@ public class RemotePeopleService implements PeopleService {
     return peopleServiceClient.getPeople(pageNumber);
   }
 
-  @Nullable
   @Override
-  public Person personByUserId(UUID userId) {
+  public @Nullable Person personByUserId(UUID userId) {
     try {
       return peopleServiceClient.getPersonInfoByUserId(userId);
     } catch (FeignException.NotFound e) {
@@ -45,8 +52,11 @@ public class RemotePeopleService implements PeopleService {
 
   @Override
   public boolean update(UUID id, PersonDto person) {
-    peopleServiceClient.updatePerson(id, person);
-
-    return true;
+    try {
+      peopleServiceClient.updatePerson(id, person);
+      return true;
+    }catch (FeignException e) {
+      return false;
+    }
   }
 }
