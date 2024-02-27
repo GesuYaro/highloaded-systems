@@ -1,12 +1,12 @@
 package com.dedlam.ftesterlab.controllers.people;
 
-import com.dedlam.ftesterlab.auth.AuthService;
 import com.dedlam.ftesterlab.controllers.BaseController;
 import com.dedlam.ftesterlab.domain.people.ContactDto;
 import com.dedlam.ftesterlab.domain.people.models.Contact;
 import com.dedlam.ftesterlab.domain.people.models.Contact.ContactType;
 import com.dedlam.ftesterlab.domain.people.services.ContactsService;
 import com.dedlam.ftesterlab.domain.people.services.PeopleService;
+import com.dedlam.ftesterlab.domain.users.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +22,10 @@ public class ContactsController extends BaseController {
   private final Logger logger;
   private final ContactsService contactsService;
 
-  public ContactsController(PeopleService peopleService, AuthService authService, ContactsService contactsService) {
-    super(peopleService, authService);
-    this.logger = LoggerFactory.getLogger(ContactsController.class);
+  public ContactsController(UserService userService, PeopleService peopleService, ContactsService contactsService) {
+    super(userService, peopleService);
     this.contactsService = contactsService;
+    this.logger = LoggerFactory.getLogger(ContactsController.class);
   }
 
   @GetMapping("/contacts")

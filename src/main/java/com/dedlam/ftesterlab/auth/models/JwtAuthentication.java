@@ -1,6 +1,5 @@
-package com.dedlam.ftesterlab.auth;
+package com.dedlam.ftesterlab.auth.models;
 
-import com.dedlam.ftesterlab.auth.models.Role;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.Authentication;

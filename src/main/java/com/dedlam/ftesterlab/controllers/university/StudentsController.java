@@ -1,6 +1,5 @@
 package com.dedlam.ftesterlab.controllers.university;
 
-import com.dedlam.ftesterlab.auth.AuthService;
 import com.dedlam.ftesterlab.controllers.BaseController;
 import com.dedlam.ftesterlab.domain.people.services.PeopleService;
 import com.dedlam.ftesterlab.domain.tests.mappers.DeadlineMapper;
@@ -8,6 +7,7 @@ import com.dedlam.ftesterlab.domain.tests.mappers.TestMapper;
 import com.dedlam.ftesterlab.domain.tests.services.StudentTestService;
 import com.dedlam.ftesterlab.domain.tests.services.dto.*;
 import com.dedlam.ftesterlab.domain.university.database.StudentsInfoRepository;
+import com.dedlam.ftesterlab.domain.users.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -28,8 +28,15 @@ public class StudentsController extends BaseController {
   private final DeadlineMapper deadlineMapper;
   private final TestMapper testMapper;
 
-  public StudentsController(PeopleService peopleService, StudentsInfoRepository studentsInfoRepository, StudentTestService studentTestService, DeadlineMapper deadlineMapper, TestMapper testMapper, AuthService authService) {
-    super(peopleService, authService);
+  public StudentsController(
+    UserService userService,
+    PeopleService peopleService,
+    StudentsInfoRepository studentsInfoRepository,
+    StudentTestService studentTestService,
+    DeadlineMapper deadlineMapper,
+    TestMapper testMapper
+  ) {
+    super(userService, peopleService);
     this.studentsInfoRepository = studentsInfoRepository;
     this.studentTestService = studentTestService;
     this.deadlineMapper = deadlineMapper;

@@ -1,8 +1,8 @@
 package com.dedlam.ftesterlab.controllers.admin;
 
-import com.dedlam.ftesterlab.auth.AuthService;
 import com.dedlam.ftesterlab.domain.people.models.Person;
 import com.dedlam.ftesterlab.domain.people.services.PeopleService;
+import com.dedlam.ftesterlab.domain.users.UserService;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +16,11 @@ import java.util.List;
 @RestController
 @RequestMapping("admin")
 public class PeopleManagingController {
-  private final AuthService authService;
+  private final UserService userService;
   private final PeopleService peopleService;
 
-  public PeopleManagingController(AuthService authService, PeopleService peopleService) {
-    this.authService = authService;
+  public PeopleManagingController(UserService userService, PeopleService peopleService) {
+    this.userService = userService;
     this.peopleService = peopleService;
   }
 
@@ -38,7 +38,7 @@ public class PeopleManagingController {
 
   private PersonView personView(Person person) {
     return new PersonView(
-      authService.user(person.getId()).username(), person.getId().toString(), person.getName(),
+      userService.user(person.getId()).username(), person.getId().toString(), person.getName(),
       person.getMiddleName(), person.getLastName(), person.getBirthday()
     );
   }

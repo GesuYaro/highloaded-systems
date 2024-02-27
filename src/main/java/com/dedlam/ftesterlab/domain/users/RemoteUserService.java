@@ -1,8 +1,8 @@
-package com.dedlam.ftesterlab.auth;
+package com.dedlam.ftesterlab.domain.users;
 
+import com.dedlam.ftesterlab.auth.AuthServiceClient;
+import com.dedlam.ftesterlab.auth.models.User;
 import com.dedlam.ftesterlab.auth.dto.CreateUserRequest;
-import com.dedlam.ftesterlab.feign.AuthServiceClient;
-import com.dedlam.ftesterlab.feign.dto.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class RemoteUserService implements UserService {
 
   private final AuthServiceClient authServiceClient;
 
