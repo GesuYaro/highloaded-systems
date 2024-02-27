@@ -12,11 +12,11 @@ import java.util.UUID;
 
 public interface SubjectRepository extends JpaRepository<Subject, UUID> {
 
-    Page<Subject> findByTeacher_Teacher_Id(UUID id, Pageable pageable);
+    Page<Subject> findByTeacher_TeacherId(UUID id, Pageable pageable);
 
     List<Subject> findAllByNameIn(Set<String> names);
 
-    Optional<Subject> findByIdAndTeacher_Teacher_Id(UUID id, UUID teacherId);
+    Optional<Subject> findByIdAndTeacher_TeacherId(UUID id, UUID teacherId);
 
     boolean existsByName(String name);
 }

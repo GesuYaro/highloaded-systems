@@ -35,7 +35,7 @@ public class StudentTestServiceImpl implements StudentTestService {
     @Override
     @Transactional
     public Page<Deadline> incomingDeadlines(Person user, Pageable pageable) {
-        var studentInfo = studentsInfoRepository.findStudentInfoByStudent_Id(user.getId())
+        var studentInfo = studentsInfoRepository.findStudentInfoByStudentId(user.getId())
                 .orElseThrow(() -> new BaseException("not a student", NOT_FOUND));
         return deadlineRepository.findByGroup(studentInfo.getGroup(), pageable);
     }
@@ -43,7 +43,7 @@ public class StudentTestServiceImpl implements StudentTestService {
     @Override
     @Transactional
     public TestWithTestResult startTest(StartTestDto startTestDto, Person user) {
-        var studentInfo = studentsInfoRepository.findStudentInfoByStudent_Id(user.getId())
+        var studentInfo = studentsInfoRepository.findStudentInfoByStudentId(user.getId())
                 .orElseThrow(() -> new BaseException("not a student", NOT_FOUND));
         var deadline = deadlineRepository.findById(startTestDto.deadlineId())
                 .orElseThrow(() -> new BaseException("no such deadline", NOT_FOUND));
@@ -62,7 +62,7 @@ public class StudentTestServiceImpl implements StudentTestService {
     @Override
     @Transactional
     public TestResult submitTest(TestSubmitDto submitDto, Person user) {
-        var studentInfo = studentsInfoRepository.findStudentInfoByStudent_Id(user.getId())
+        var studentInfo = studentsInfoRepository.findStudentInfoByStudentId(user.getId())
                 .orElseThrow(() -> new BaseException("not a student", NOT_FOUND));
         var testResult = testResultRepository.findById(submitDto.testResultId())
                 .orElseThrow(() -> new BaseException("no such test result", NOT_FOUND));

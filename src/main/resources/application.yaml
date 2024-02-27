@@ -17,6 +17,8 @@ spring:
     enabled: true
     default-schema: "public"
     change-log: classpath:db/changesets.xml
+  profiles:
+    active: dev
 
 jwt:
   secret:

@@ -27,7 +27,7 @@ public class DeadlineServiceImpl implements DeadlineService {
 
     @Override
     public Page<Deadline> deadlines(Person user, Pageable pageable) {
-        return deadlineRepository.findByTest_Teacher_Teacher_Id(user.getId(), pageable);
+        return deadlineRepository.findByTest_Teacher_TeacherId(user.getId(), pageable);
     }
 
     @Override

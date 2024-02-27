@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Repository
 public interface DeadlineRepository extends JpaRepository<Deadline, UUID> {
-    Page<Deadline> findByTest_Teacher_Teacher_Id(UUID id, Pageable pageable);
+    Page<Deadline> findByTest_Teacher_TeacherId(UUID id, Pageable pageable);
 
     Page<Deadline> findByGroup_Id(UUID id, Pageable pageable);
 
