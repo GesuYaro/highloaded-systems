@@ -29,7 +29,7 @@ public interface AuthServiceClient {
     @RequestMapping(method = RequestMethod.GET, value = "/users")
     User findUserByUsername(@RequestParam String username);
 
-    @RequestMapping(method = RequestMethod.GET, value = "/auth/users/bulk")
+    @RequestMapping(method = RequestMethod.GET, value = "/users/bulk/by-usernames")
     List<User> findUsersByUsernames(@RequestParam Set<String> usernames);
 
     @RequestMapping(method = RequestMethod.POST, value = "/users")

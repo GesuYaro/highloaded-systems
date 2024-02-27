@@ -1,5 +1,7 @@
 package com.dedlam.ftesterlab.domain.people.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -24,6 +26,7 @@ public class Person {
 
   private String lastName;
 
+  @JsonFormat(pattern = "dd.MM.yyyy")
   private LocalDate birthday;
 
   private UUID userId;

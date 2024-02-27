@@ -2,6 +2,7 @@ package com.dedlam.ftesterlab.domain.people.services;
 
 import com.dedlam.ftesterlab.domain.people.PeopleServiceClient;
 import com.dedlam.ftesterlab.domain.people.models.Person;
+import feign.FeignException;
 import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,11 @@ public class RemotePeopleService implements PeopleService {
   @Nullable
   @Override
   public Person personByUserId(UUID userId) {
-    return peopleServiceClient.getPersonInfoByUserId(userId);
+    try {
+      return peopleServiceClient.getPersonInfoByUserId(userId);
+    } catch (FeignException.NotFound e) {
+      return null;
+    }
   }
 
   @Override

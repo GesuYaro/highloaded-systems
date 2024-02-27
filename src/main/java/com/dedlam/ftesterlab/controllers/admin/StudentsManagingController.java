@@ -85,7 +85,7 @@ public class StudentsManagingController {
     }
 
     var notStudentsUsernames = users.stream()
-      .filter(user -> user.roles().contains("STUDENT"))
+      .filter(user -> !user.roles().contains("STUDENT"))
       .map(User::username)
       .toList();
 

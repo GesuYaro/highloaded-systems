@@ -1,6 +1,5 @@
 package com.dedlam.ftesterlab.domain.people.services;
 
-import com.dedlam.ftesterlab.auth.models.DefaultUser;
 import com.dedlam.ftesterlab.domain.people.models.Person;
 import jakarta.annotation.Nullable;
 
