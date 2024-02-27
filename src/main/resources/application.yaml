@@ -17,6 +17,8 @@ spring:
     enabled: true
     default-schema: "public"
     change-log: classpath:db/changesets.xml
+  profiles:
+    active: dev
 
 jwt:
   secret:
@@ -30,3 +32,13 @@ logging:
     com:
       zaxxer:
         hikari: DEBUG
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true

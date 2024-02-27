@@ -1,6 +1,6 @@
 package com.dedlam.ftesterlab.domain.university.services;
 
-import com.dedlam.ftesterlab.domain.people.database.Person;
+import com.dedlam.ftesterlab.domain.people.models.Person;
 import com.dedlam.ftesterlab.domain.university.database.StudentsInfoRepository;
 import com.dedlam.ftesterlab.domain.university.models.Group;
 import com.dedlam.ftesterlab.domain.university.models.StudentInfo;

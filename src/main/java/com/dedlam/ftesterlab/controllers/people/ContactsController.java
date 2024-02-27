@@ -1,15 +1,14 @@
 package com.dedlam.ftesterlab.controllers.people;
 
-import com.dedlam.ftesterlab.auth.database.UsersRepository;
+import com.dedlam.ftesterlab.auth.AuthService;
 import com.dedlam.ftesterlab.controllers.BaseController;
-import com.dedlam.ftesterlab.domain.people.database.contacts.Contact;
-import com.dedlam.ftesterlab.domain.people.database.contacts.Contact.ContactType;
-import com.dedlam.ftesterlab.domain.people.database.contacts.PersonContactsInfoRepository;
+import com.dedlam.ftesterlab.domain.people.ContactDto;
+import com.dedlam.ftesterlab.domain.people.models.Contact;
+import com.dedlam.ftesterlab.domain.people.models.Contact.ContactType;
 import com.dedlam.ftesterlab.domain.people.services.ContactsService;
 import com.dedlam.ftesterlab.domain.people.services.PeopleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,29 +21,11 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 public class ContactsController extends BaseController {
   private final Logger logger;
   private final ContactsService contactsService;
-  private final PersonContactsInfoRepository contactsInfoRepository;
 
-  public ContactsController(
-    UsersRepository usersRepository,
-    PeopleService peopleService,
-    ContactsService contactsService,
-    PersonContactsInfoRepository contactsInfoRepository,
-    Logger logger
-  ) {
-    super(usersRepository, peopleService);
+  public ContactsController(PeopleService peopleService, AuthService authService, ContactsService contactsService) {
+    super(peopleService, authService);
+    this.logger = LoggerFactory.getLogger(ContactsController.class);
     this.contactsService = contactsService;
-    this.contactsInfoRepository = contactsInfoRepository;
-    this.logger = logger;
-  }
-
-  @Autowired
-  public ContactsController(
-    UsersRepository usersRepository,
-    PeopleService peopleService,
-    ContactsService contactsService,
-    PersonContactsInfoRepository contactsInfoRepository
-  ) {
-    this(usersRepository, peopleService, contactsService, contactsInfoRepository, LoggerFactory.getLogger(ContactsController.class));
   }
 
   @GetMapping("/contacts")
@@ -58,7 +39,7 @@ public class ContactsController extends BaseController {
 
     var personId = person.getId();
 
-    var contacts = contactsInfoRepository.findByPerson_Id(personId).getContacts()
+    var contacts = contactsService.contacts(personId)
       .stream()
       .map(ContactsController::contactView)
       .toList();
@@ -76,7 +57,7 @@ public class ContactsController extends BaseController {
     }
 
     var personId = person.getId();
-    List<Contact> contactsReq = contacts.stream().map(c -> new Contact(null, c.type, c.value)).toList();
+    List<ContactDto> contactsReq = contacts.stream().map(c -> new ContactDto(c.type, c.value)).toList();
 
     contactsService.updateContacts(personId, contactsReq);
 
@@ -87,7 +68,7 @@ public class ContactsController extends BaseController {
     var user = user();
     return String.format(
       "Can't get contacts info, because no person-info for user '%s' with id='%s'",
-      user.getUsername(), user.getId()
+      user.username(), user.id()
     );
   }
 

@@ -1,6 +1,6 @@
 package com.dedlam.ftesterlab.controllers.university;
 
-import com.dedlam.ftesterlab.auth.database.UsersRepository;
+import com.dedlam.ftesterlab.auth.AuthService;
 import com.dedlam.ftesterlab.controllers.BaseController;
 import com.dedlam.ftesterlab.domain.people.services.PeopleService;
 import com.dedlam.ftesterlab.domain.tests.mappers.DeadlineMapper;
@@ -34,16 +34,16 @@ public class TeachersController extends BaseController {
     private final GroupsService groupsService;
 
     public TeachersController(
-            UsersRepository usersRepository,
             PeopleService peopleService,
             SubjectService subjectService,
             TestMapper testMapper,
             TestService testService,
             DeadlineService deadlineService,
             DeadlineMapper deadlineMapper,
-            GroupsService groupsService
+            GroupsService groupsService,
+            AuthService authService
     ) {
-        super(usersRepository, peopleService);
+        super(peopleService, authService);
         this.subjectService = subjectService;
         this.testMapper = testMapper;
         this.testService = testService;

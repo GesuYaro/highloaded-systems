@@ -6,5 +6,7 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <include file="changesets/initial.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/changeset-1-remove-constraints-of-teachers-and-users-to-people.xml"
+             relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

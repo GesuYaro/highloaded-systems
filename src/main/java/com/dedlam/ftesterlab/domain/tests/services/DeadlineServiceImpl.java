@@ -1,6 +1,7 @@
 package com.dedlam.ftesterlab.domain.tests.services;
 
-import com.dedlam.ftesterlab.domain.people.database.Person;
+import com.dedlam.ftesterlab.domain.people.models.Person;
+import com.dedlam.ftesterlab.domain.people.services.PeopleService;
 import com.dedlam.ftesterlab.domain.tests.database.DeadlineRepository;
 import com.dedlam.ftesterlab.domain.tests.database.TestRepository;
 import com.dedlam.ftesterlab.domain.tests.models.Deadline;
@@ -19,14 +20,14 @@ import static com.dedlam.ftesterlab.utils.exceptions.ExceptionType.NOT_FOUND;
 @Service
 @RequiredArgsConstructor
 public class DeadlineServiceImpl implements DeadlineService {
-
+    private final PeopleService peopleService;
     private final DeadlineRepository deadlineRepository;
     private final TestRepository testRepository;
     private final GroupsRepository groupsRepository;
 
     @Override
     public Page<Deadline> deadlines(Person user, Pageable pageable) {
-        return deadlineRepository.findByTest_Teacher_Teacher_Id(user.getId(), pageable);
+        return deadlineRepository.findByTest_Teacher_TeacherId(user.getId(), pageable);
     }
 
     @Override
@@ -34,7 +35,8 @@ public class DeadlineServiceImpl implements DeadlineService {
     public Deadline createDeadline(DeadlineCreateDto createDto, Person user) {
         var test = testRepository.findById(createDto.testId())
                 .orElseThrow(() -> new BaseException("no such test", NOT_FOUND));
-        var testOwner = test.getTeacher().getTeacher();
+        var testOwner = peopleService.person(test.getTeacher().getTeacherId());
+        if (testOwner == null) throw new BaseException("Can't find person", NOT_FOUND);
         if (!testOwner.getId().equals(user.getId())) throw new BaseException("test belongs to another user", FORBIDDEN);
         var group = groupsRepository.findById(createDto.groupId())
                 .orElseThrow(() -> new BaseException("no such group", NOT_FOUND));
