@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.25.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="202402271643" author="Mikhail">
+        <dropForeignKeyConstraint baseTableName="students_info" constraintName="FK_STUDENTS_INFO_ON_STUDENT"/>
+        <dropForeignKeyConstraint baseTableName="teachers_info" constraintName="FK_TEACHERS_INFO_ON_TEACHER"/>
+    </changeSet>
+</databaseChangeLog>
