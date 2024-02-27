@@ -1,7 +1,7 @@
 package com.dedlam.ftesterlab.controllers.admin;
 
 import com.dedlam.ftesterlab.auth.AuthService;
-import com.dedlam.ftesterlab.domain.people.database.PeopleRepository;
+import com.dedlam.ftesterlab.domain.people.services.PeopleService;
 import com.dedlam.ftesterlab.domain.university.services.TeachersService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 public class TeachersManagingController {
   private static final Logger logger = LoggerFactory.getLogger(TeachersManagingController.class);
   private final AuthService authService;
-  private final PeopleRepository peopleRepository;
+  private final PeopleService peopleService;
   private final TeachersService teachersService;
 
   @PostMapping("init")
@@ -32,14 +32,14 @@ public class TeachersManagingController {
       return new ResponseEntity<>(message, UNPROCESSABLE_ENTITY);
     }
 
-    var teacherOpt = peopleRepository.findByUserId(teacherUser.id());
-    if (teacherOpt.isEmpty()) {
+    var teacher = peopleService.personByUserId(teacherUser.id());
+    if (teacher == null) {
       var message = String.format("Can't init teacher, because can't find person with username '%s'", request.username);
       logger.warn(message);
       return new ResponseEntity<>(message, UNPROCESSABLE_ENTITY);
     }
 
-    boolean result = teachersService.createAndInitTeachersInfo(teacherOpt.get());
+    boolean result = teachersService.createAndInitTeachersInfo(teacher);
 
     return ResponseEntity.ok(result);
   }

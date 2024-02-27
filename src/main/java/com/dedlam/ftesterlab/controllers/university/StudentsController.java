@@ -66,7 +66,7 @@ public class StudentsController extends BaseController {
       return new ResponseEntity<>(msg, UNPROCESSABLE_ENTITY);
     }
 
-    var studentInfoOpt = studentsInfoRepository.findStudentInfoByStudent_Id(person.getId());
+    var studentInfoOpt = studentsInfoRepository.findStudentInfoByStudentId(person.getId());
     if (studentInfoOpt.isEmpty()) {
       var user = user();
       var msg = String.format(

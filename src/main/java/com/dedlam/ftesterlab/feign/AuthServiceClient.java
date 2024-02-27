@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @FeignClient("auth-service")
@@ -26,6 +28,9 @@ public interface AuthServiceClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/users")
     User findUserByUsername(@RequestParam String username);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/users/bulk/by-usernames")
+    List<User> findUsersByUsernames(@RequestParam Set<String> usernames);
 
     @RequestMapping(method = RequestMethod.POST, value = "/users")
     UUID createUser(CreateUserRequest createUserRequest);

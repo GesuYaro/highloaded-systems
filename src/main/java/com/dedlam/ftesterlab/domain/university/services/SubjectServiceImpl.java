@@ -1,6 +1,6 @@
 package com.dedlam.ftesterlab.domain.university.services;
 
-import com.dedlam.ftesterlab.domain.people.database.Person;
+import com.dedlam.ftesterlab.domain.people.models.Person;
 import com.dedlam.ftesterlab.domain.university.services.dto.SubjectCreateDto;
 import com.dedlam.ftesterlab.domain.university.database.SubjectRepository;
 import com.dedlam.ftesterlab.domain.university.database.TeachersInfoRepository;
@@ -25,7 +25,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     @Transactional
     public Subject create(SubjectCreateDto createDto, Person owner) {
-        var ownerTeacherInfo = teachersInfoRepository.findByTeacher_Id(owner.getId()).orElseThrow(() -> new BaseException(NOT_FOUND));
+        var ownerTeacherInfo = teachersInfoRepository.findTeacherInfoByTeacherId(owner.getId()).orElseThrow(() -> new BaseException(NOT_FOUND));
         if (subjectRepository.existsByName(createDto.name())) throw new BaseException("subject with name already exists", BAD_REQUEST);
         var entity = new Subject(null, createDto.name(), ownerTeacherInfo);
         return subjectRepository.save(entity);
@@ -34,6 +34,6 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     @Transactional
     public Page<Subject> subjects(Person owner, Pageable pageable) {
-        return subjectRepository.findByTeacher_Teacher_Id(owner.getId(), pageable);
+        return subjectRepository.findByTeacher_TeacherId(owner.getId(), pageable);
     }
 }

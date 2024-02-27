@@ -1,6 +1,6 @@
 package com.dedlam.ftesterlab.domain.tests.services;
 
-import com.dedlam.ftesterlab.domain.people.database.Person;
+import com.dedlam.ftesterlab.domain.people.models.Person;
 import com.dedlam.ftesterlab.domain.tests.database.TestRepository;
 import com.dedlam.ftesterlab.domain.tests.models.Answer;
 import com.dedlam.ftesterlab.domain.tests.models.Question;
@@ -45,7 +45,7 @@ public class TestServiceImpl implements TestService {
     public Test changeTestOpenState(TestChangeStateDto changeStateDto, Person owner) {
         var test = testRepository.findById(changeStateDto.testId())
                 .orElseThrow(() -> new BaseException("test not found", NOT_FOUND));
-        var teacher = teachersInfoRepository.findByTeacher_Id(owner.getId())
+        var teacher = teachersInfoRepository.findTeacherInfoByTeacherId(owner.getId())
                 .orElseThrow(() -> new BaseException("teacher not found", NOT_FOUND));
         var teacherId = teacher.getId();
         var testOwnerId = test.getTeacher().getId();
@@ -56,9 +56,9 @@ public class TestServiceImpl implements TestService {
     }
 
     private Test toEntity(TestCreateDto createDto, UUID ownerId) {
-        var subject = subjectRepository.findByIdAndTeacher_Teacher_Id(createDto.subjectId(), ownerId)
+        var subject = subjectRepository.findByIdAndTeacher_TeacherId(createDto.subjectId(), ownerId)
                 .orElseThrow(() -> new BaseException("No such subject for this user", NOT_FOUND));
-        var teacher = teachersInfoRepository.findByTeacher_Id(ownerId)
+        var teacher = teachersInfoRepository.findTeacherInfoByTeacherId(ownerId)
                 .orElseThrow(() -> new BaseException("teacher not found", NOT_FOUND));
         var testEntity = new Test();
         var questions = toQuestionEntityList(createDto.questions(), testEntity);

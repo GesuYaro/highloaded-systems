@@ -1,6 +1,6 @@
 package com.dedlam.ftesterlab.domain.university.services;
 
-import com.dedlam.ftesterlab.domain.people.database.Person;
+import com.dedlam.ftesterlab.domain.people.models.Person;
 import com.dedlam.ftesterlab.domain.university.database.StudentsInfoRepository;
 import com.dedlam.ftesterlab.domain.university.models.StudentInfo;
 import org.slf4j.Logger;
@@ -40,7 +40,7 @@ public class StudentsServiceImpl implements StudentsService {
   public boolean createAndInitStudentsInfo(String groupName, List<Person> people) {
     var studentsInfo = people
       .stream()
-      .map(person -> new StudentInfo(null, person, null))
+      .map(person -> new StudentInfo(null, person.getId(), null))
       .toList();
 
     Boolean success = transactionTemplate.execute(ctx -> {

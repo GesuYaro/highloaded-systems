@@ -1,7 +1,7 @@
 package com.dedlam.ftesterlab.controllers;
 
 import com.dedlam.ftesterlab.auth.AuthService;
-import com.dedlam.ftesterlab.domain.people.database.Person;
+import com.dedlam.ftesterlab.domain.people.models.Person;
 import com.dedlam.ftesterlab.domain.people.services.PeopleService;
 import com.dedlam.ftesterlab.feign.dto.User;
 import com.dedlam.ftesterlab.utils.exceptions.BaseException;

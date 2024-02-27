@@ -1,10 +1,13 @@
 package com.dedlam.ftesterlab.domain.people.services;
 
-import com.dedlam.ftesterlab.domain.people.database.contacts.Contact;
+import com.dedlam.ftesterlab.domain.people.ContactDto;
+import com.dedlam.ftesterlab.domain.people.models.Contact;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface ContactsService {
-  boolean updateContacts(UUID personId, List<Contact> contacts);
+  List<Contact> contacts(UUID personId);
+
+  boolean updateContacts(UUID personId, List<ContactDto> contacts);
 }
