@@ -1,8 +1,8 @@
 package com.dedlam.ftesterlab.controllers.admin;
 
-import com.dedlam.ftesterlab.auth.AuthService;
 import com.dedlam.ftesterlab.auth.dto.CreateUserRequest;
 import com.dedlam.ftesterlab.auth.dto.CreateUserRequest.UserType;
+import com.dedlam.ftesterlab.domain.users.UserService;
 import com.dedlam.ftesterlab.utils.exceptions.BaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +23,10 @@ import static com.dedlam.ftesterlab.utils.exceptions.ExceptionType.BAD_REQUEST;
 public class UsersManagingController {
   private static final Logger logger = LoggerFactory.getLogger(UsersManagingController.class);
 
-  private final AuthService authService;
+  private final UserService userService;
 
-  public UsersManagingController(AuthService authService) {
-    this.authService = authService;
+  public UsersManagingController(UserService userService) {
+    this.userService = userService;
   }
 
   @PostMapping("/registration/students")
@@ -54,7 +54,7 @@ public class UsersManagingController {
   }
 
   private UUID registerUser(UserType userType, String username, String password) {
-    if (authService.existsByUsername(username)) {
+    if (userService.existsByUsername(username)) {
       var message = String.format("User with username '%s' is already exists. Failed to register user", username);
       logger.warn(message);
       throw new BaseException(message, BAD_REQUEST);
@@ -62,7 +62,7 @@ public class UsersManagingController {
 
     var teacher = new CreateUserRequest(userType, username, password);
 
-    return authService.createUser(teacher);
+    return userService.createUser(teacher);
   }
 
   public record RegisterUserRequest(String username, String password) {

@@ -1,8 +1,7 @@
 package com.dedlam.ftesterlab.auth;
 
 import com.dedlam.ftesterlab.auth.dto.InfoFromTokenRequest;
-import com.dedlam.ftesterlab.auth.models.Role;
-import io.jsonwebtoken.Claims;
+import com.dedlam.ftesterlab.auth.models.JwtAuthentication;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -15,9 +14,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor

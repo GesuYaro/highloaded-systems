@@ -3,6 +3,7 @@ package com.dedlam.ftesterlab.domain.people.services;
 import com.dedlam.ftesterlab.domain.people.ContactDto;
 import com.dedlam.ftesterlab.domain.people.PeopleServiceClient;
 import com.dedlam.ftesterlab.domain.people.models.Contact;
+import feign.FeignException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,8 +24,11 @@ public class RemoteContactsService implements ContactsService {
 
   @Override
   public boolean updateContacts(UUID personId, List<ContactDto> contacts) {
-    peopleServiceClient.updateContacts(personId, contacts);
-
-    return true;
+    try {
+      peopleServiceClient.updateContacts(personId, contacts);
+      return true;
+    } catch (FeignException e) {
+      return false;
+    }
   }
 }

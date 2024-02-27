@@ -1,9 +1,9 @@
 package com.dedlam.ftesterlab.controllers;
 
-import com.dedlam.ftesterlab.auth.AuthService;
+import com.dedlam.ftesterlab.auth.models.User;
 import com.dedlam.ftesterlab.domain.people.models.Person;
 import com.dedlam.ftesterlab.domain.people.services.PeopleService;
-import com.dedlam.ftesterlab.feign.dto.User;
+import com.dedlam.ftesterlab.domain.users.UserService;
 import com.dedlam.ftesterlab.utils.exceptions.BaseException;
 import jakarta.annotation.Nullable;
 import org.springframework.http.HttpStatus;
@@ -12,12 +12,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 public abstract class BaseController {
-  private final AuthService authService;
+  private final UserService userService;
   private final PeopleService peopleService;
 
-  public BaseController(PeopleService peopleService, AuthService authService) {
+  public BaseController(UserService userService, PeopleService peopleService) {
+    this.userService = userService;
     this.peopleService = peopleService;
-    this.authService = authService;
   }
 
   @ExceptionHandler(BaseException.class)
@@ -37,7 +37,7 @@ public abstract class BaseController {
 
   protected User user() {
     String username = username();
-    return authService.findUserByUsername(username);
+    return userService.findUserByUsername(username);
   }
 
   protected @Nullable Person person() {

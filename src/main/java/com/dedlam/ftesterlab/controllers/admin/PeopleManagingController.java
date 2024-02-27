@@ -1,8 +1,8 @@
 package com.dedlam.ftesterlab.controllers.admin;
 
-import com.dedlam.ftesterlab.auth.AuthService;
 import com.dedlam.ftesterlab.domain.people.models.Person;
 import com.dedlam.ftesterlab.domain.people.services.PeopleService;
+import com.dedlam.ftesterlab.domain.users.UserService;
 import com.dedlam.ftesterlab.utils.exceptions.BaseException;
 import com.dedlam.ftesterlab.utils.exceptions.ExceptionType;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("admin")
 @RequiredArgsConstructor
 public class PeopleManagingController {
-  private final AuthService authService;
+  private final UserService userService;
   private final PeopleService peopleService;
   private final CircuitBreakerFactory circuitBreakerFactory;
 
@@ -38,7 +38,7 @@ public class PeopleManagingController {
   private PersonView personView(Person person) {
     var cb = circuitBreakerFactory.create("cb");
     var username = cb.run(
-            () -> authService.user(person.getId()).username(),
+            () -> userService.user(person.getId()).username(),
             throwable -> { throw new BaseException(ExceptionType.BAD_REQUEST); }
     );
     return new PersonView(
