@@ -1,9 +1,9 @@
 package com.dedlam.ftesterlab.controllers.admin;
 
-import com.dedlam.ftesterlab.domain.people.database.PeopleRepository;
-import com.dedlam.ftesterlab.domain.people.database.Person;
+import com.dedlam.ftesterlab.auth.AuthService;
+import com.dedlam.ftesterlab.domain.people.models.Person;
+import com.dedlam.ftesterlab.domain.people.services.PeopleService;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,28 +16,29 @@ import java.util.List;
 @RestController
 @RequestMapping("admin")
 public class PeopleManagingController {
+  private final AuthService authService;
+  private final PeopleService peopleService;
 
-  private final PeopleRepository peopleRepository;
-
-  public PeopleManagingController(PeopleRepository peopleRepository) {
-    this.peopleRepository = peopleRepository;
+  public PeopleManagingController(AuthService authService, PeopleService peopleService) {
+    this.authService = authService;
+    this.peopleService = peopleService;
   }
 
   @GetMapping("people")
   public ResponseEntity<PeopleView> people(@RequestParam int pageNumber) {
-    var pageRequest = PageRequest.of(pageNumber, 50);
-    var result = peopleRepository.findAll(pageRequest);
+    var result = peopleService.people(pageNumber);
+
     var people = new PeopleView(
-      result.getTotalPages(),
-      result.toList().stream().map(PeopleManagingController::personView).toList()
+      result.totalPageNumber(),
+      result.people().stream().map(this::personView).toList()
     );
 
     return ResponseEntity.ok(people);
   }
 
-  private static PersonView personView(Person person) {
+  private PersonView personView(Person person) {
     return new PersonView(
-      person.getUser().getUsername(), person.getId().toString(), person.getName(),
+      authService.user(person.getId()).username(), person.getId().toString(), person.getName(),
       person.getMiddleName(), person.getLastName(), person.getBirthday()
     );
   }

@@ -1,6 +1,6 @@
 package com.dedlam.ftesterlab.domain.university.services;
 
-import com.dedlam.ftesterlab.domain.people.database.Person;
+import com.dedlam.ftesterlab.domain.people.models.Person;
 import com.dedlam.ftesterlab.domain.university.database.TeachersInfoRepository;
 import com.dedlam.ftesterlab.domain.university.models.TeacherInfo;
 import org.springframework.dao.DataAccessException;
@@ -18,7 +18,7 @@ public class TeachersServiceImpl implements TeachersService {
 
   @Override
   public boolean createAndInitTeachersInfo(Person teacher) {
-    var teacherInfo = new TeacherInfo(null, teacher, List.of());
+    var teacherInfo = new TeacherInfo(null, teacher.getId(), List.of());
 
     try {
       repository.save(teacherInfo);

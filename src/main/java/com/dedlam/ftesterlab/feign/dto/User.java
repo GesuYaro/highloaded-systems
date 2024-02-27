@@ -1,9 +1,11 @@
 package com.dedlam.ftesterlab.feign.dto;
 
+import java.util.Set;
 import java.util.UUID;
 
 public record User(
-        UUID id,
-        String username
+  UUID id,
+  String username,
+  Set<String> roles
 ) {
 }

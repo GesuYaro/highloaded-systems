@@ -1,4 +1,4 @@
-package com.dedlam.ftesterlab.domain.people.services.dto;
+package com.dedlam.ftesterlab.domain.people.services;
 
 import java.time.LocalDate;
 

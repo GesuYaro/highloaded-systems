@@ -1,6 +1,5 @@
 package com.dedlam.ftesterlab.domain.university.models;
 
-import com.dedlam.ftesterlab.domain.people.database.Person;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -12,9 +11,9 @@ public class TeacherInfo {
   public TeacherInfo() {
   }
 
-  public TeacherInfo(UUID id, Person teacher, List<Subject> subjects) {
+  public TeacherInfo(UUID id, UUID teacherId, List<Subject> subjects) {
     this.id = id;
-    this.teacher = teacher;
+    this.teacherId = teacherId;
     this.subjects = subjects;
   }
 
@@ -22,9 +21,8 @@ public class TeacherInfo {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @OneToOne(cascade = CascadeType.ALL, optional = false)
-  @JoinColumn(nullable = false, unique = true, name = "teacher_id", referencedColumnName = "id")
-  private Person teacher;
+  @Column(name = "teacher_id", nullable = false, unique = true)
+  private UUID teacherId;
 
   @OneToMany(mappedBy = "teacher")
   private List<Subject> subjects;
@@ -37,12 +35,12 @@ public class TeacherInfo {
     this.id = id;
   }
 
-  public Person getTeacher() {
-    return teacher;
+  public UUID getTeacherId() {
+    return teacherId;
   }
 
-  public void setTeacher(Person teacher) {
-    this.teacher = teacher;
+  public void setTeacherId(UUID teacherId) {
+    this.teacherId = teacherId;
   }
 
   public List<Subject> getSubjects() {

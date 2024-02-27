@@ -1,45 +1,32 @@
-package com.dedlam.ftesterlab.domain.people.database;
-
-import com.dedlam.ftesterlab.auth.models.DefaultUser;
-import jakarta.persistence.*;
+package com.dedlam.ftesterlab.domain.people.models;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Entity
-@Table(name = "people")
 public class Person {
   public Person() {
   }
 
-  public Person(UUID id, String name, String middleName, String lastName, LocalDate birthday, DefaultUser user) {
+  public Person(UUID id, String name, String middleName, String lastName, LocalDate birthday, UUID userId) {
     this.id = id;
     this.name = name;
     this.middleName = middleName;
     this.lastName = lastName;
     this.birthday = birthday;
-    this.user = user;
+    this.userId = userId;
   }
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @Column(nullable = false)
   private String name;
 
-  @Column
   private String middleName;
 
-  @Column(nullable = false)
   private String lastName;
 
-  @Column(nullable = false)
   private LocalDate birthday;
 
-  @OneToOne
-  @JoinColumn(name = "user_id", referencedColumnName = "id")
-  private DefaultUser user;
+  private UUID userId;
 
   public UUID getId() {
     return id;
@@ -81,7 +68,11 @@ public class Person {
     this.birthday = birthDay;
   }
 
-  public DefaultUser getUser() {
-    return user;
+  public UUID getUserId() {
+    return userId;
+  }
+
+  public void setUserId(UUID userId) {
+    this.userId = userId;
   }
 }

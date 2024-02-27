@@ -1,6 +1,6 @@
 package com.dedlam.ftesterlab.domain.tests.services;
 
-import com.dedlam.ftesterlab.domain.people.database.Person;
+import com.dedlam.ftesterlab.domain.people.models.Person;
 import com.dedlam.ftesterlab.domain.tests.database.TestRepository;
 import com.dedlam.ftesterlab.domain.tests.models.Answer;
 import com.dedlam.ftesterlab.domain.tests.models.Question;

@@ -2,8 +2,7 @@ package com.dedlam.ftesterlab.domain.people.services;
 
 import com.dedlam.ftesterlab.auth.models.DefaultUser;
 import com.dedlam.ftesterlab.domain.people.database.PeopleRepository;
-import com.dedlam.ftesterlab.domain.people.database.Person;
-import com.dedlam.ftesterlab.domain.people.services.dto.PersonDto;
+import com.dedlam.ftesterlab.domain.people.models.Person;
 import jakarta.annotation.Nullable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

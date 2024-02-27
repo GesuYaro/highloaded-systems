@@ -1,7 +1,7 @@
 package com.dedlam.ftesterlab.domain.people.services;
 
-import com.dedlam.ftesterlab.domain.people.database.Person;
-import com.dedlam.ftesterlab.domain.people.database.contacts.Contact;
+import com.dedlam.ftesterlab.domain.people.models.Person;
+import com.dedlam.ftesterlab.domain.people.models.Contact;
 import com.dedlam.ftesterlab.domain.people.database.contacts.PersonContactsInfo;
 import com.dedlam.ftesterlab.domain.people.database.contacts.PersonContactsInfoRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.dedlam.ftesterlab.TestUtils.create;
-import static com.dedlam.ftesterlab.domain.people.database.contacts.Contact.ContactType.EMAIL;
-import static com.dedlam.ftesterlab.domain.people.database.contacts.Contact.ContactType.PHONE;
+import static com.dedlam.ftesterlab.domain.people.models.Contact.ContactType.EMAIL;
+import static com.dedlam.ftesterlab.domain.people.models.Contact.ContactType.PHONE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
