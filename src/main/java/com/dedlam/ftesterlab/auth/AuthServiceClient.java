@@ -1,9 +1,9 @@
-package com.dedlam.ftesterlab.feign;
+package com.dedlam.ftesterlab.auth;
 
 import com.dedlam.ftesterlab.auth.dto.CreateUserRequest;
 import com.dedlam.ftesterlab.auth.dto.InfoFromTokenRequest;
 import com.dedlam.ftesterlab.auth.dto.InfoFromTokenResponse;
-import com.dedlam.ftesterlab.feign.dto.User;
+import com.dedlam.ftesterlab.auth.models.User;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

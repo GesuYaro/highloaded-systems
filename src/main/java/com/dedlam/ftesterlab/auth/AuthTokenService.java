@@ -2,7 +2,6 @@ package com.dedlam.ftesterlab.auth;
 
 import com.dedlam.ftesterlab.auth.dto.InfoFromTokenRequest;
 import com.dedlam.ftesterlab.auth.dto.InfoFromTokenResponse;
-import com.dedlam.ftesterlab.feign.AuthServiceClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

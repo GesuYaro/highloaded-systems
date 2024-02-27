@@ -30,14 +30,6 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.1.0'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.1.0'
 
-    implementation 'commons-io:commons-io:2.15.1'
-
-    implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
-    implementation 'io.jsonwebtoken:jjwt-impl:0.12.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
-    implementation 'com.auth0:java-jwt:4.4.0'
-
-
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'

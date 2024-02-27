@@ -1,11 +1,11 @@
 package com.dedlam.ftesterlab.controllers.people;
 
-import com.dedlam.ftesterlab.auth.AuthService;
 import com.dedlam.ftesterlab.controllers.BaseController;
 import com.dedlam.ftesterlab.controllers.people.dto.PersonView;
 import com.dedlam.ftesterlab.domain.people.models.Person;
 import com.dedlam.ftesterlab.domain.people.services.PeopleService;
 import com.dedlam.ftesterlab.domain.people.services.PersonDto;
+import com.dedlam.ftesterlab.domain.users.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +23,9 @@ public class PeopleController extends BaseController {
 
   private final PeopleService service;
 
-  public PeopleController(PeopleService peopleService, AuthService authService, PeopleService service) {
-    super(peopleService, authService);
-    this.service = service;
+  public PeopleController(UserService userService, PeopleService peopleService) {
+    super(userService, peopleService);
+    this.service = peopleService;
   }
 
   @GetMapping("info")

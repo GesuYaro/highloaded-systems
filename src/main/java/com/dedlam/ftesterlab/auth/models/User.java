@@ -1,4 +1,4 @@
-package com.dedlam.ftesterlab.feign.dto;
+package com.dedlam.ftesterlab.auth.models;
 
 import java.util.Set;
 import java.util.UUID;
