@@ -7,7 +7,8 @@ import jakarta.annotation.Nullable;
 import java.util.UUID;
 
 public interface PeopleService {
-  UUID create(DefaultUser user, PersonDto person);
+  @Nullable
+  UUID create(UUID userId, PersonDto person);
 
   @Nullable
   Person person(UUID id);

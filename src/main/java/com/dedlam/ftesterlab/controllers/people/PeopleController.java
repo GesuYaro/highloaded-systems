@@ -55,8 +55,8 @@ public class PeopleController extends BaseController {
       return new ResponseEntity<>(message, UNPROCESSABLE_ENTITY);
     }
 
-//    UUID personId = service.create(user, createDto); //todo
-    UUID personId = null;
+    UUID personId = service.create(user.id(), createDto);
+
     if (personId == null) {
       return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
     }

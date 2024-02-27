@@ -1,6 +1,5 @@
 package com.dedlam.ftesterlab.domain.people.services;
 
-import com.dedlam.ftesterlab.auth.models.DefaultUser;
 import com.dedlam.ftesterlab.domain.people.PeopleServiceClient;
 import com.dedlam.ftesterlab.domain.people.models.Person;
 import jakarta.annotation.Nullable;
@@ -17,12 +16,10 @@ public class RemotePeopleService implements PeopleService {
   }
 
   @Override
-  public UUID create(DefaultUser user, PersonDto person) {
-    var request = new CreatePersonRequest(user.getId(), person);
+  public UUID create(UUID userId, PersonDto person) {
+    var request = new CreatePersonRequest(userId, person);
 
-    var id = peopleServiceClient.createPerson(request);
-
-    return id;
+    return peopleServiceClient.createPerson(request);
   }
 
   @Override
