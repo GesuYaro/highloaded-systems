@@ -48,15 +48,15 @@ class StudentsServiceImplTest {
     var student2 = create(new Person(), p -> p.setId(UUID.randomUUID()));
     var studentsToBind = List.of(student1, student2);
     var expectedStudentsInfoToSave = List.of(
-      new StudentInfo(null, student1, null),
-      new StudentInfo(null, student2, null)
+      new StudentInfo(null, student1.getId(), null),
+      new StudentInfo(null, student2.getId(), null)
     );
     var studentsInfoToSaveCaptor = ArgumentCaptor.<List<StudentInfo>>captor();
     var info1Id = UUID.randomUUID();
     var info2Id = UUID.randomUUID();
     var savedStudents = List.of(
-      new StudentInfo(info1Id, student1, null),
-      new StudentInfo(info2Id, student2, null)
+      new StudentInfo(info1Id, student1.getId(), null),
+      new StudentInfo(info2Id, student2.getId(), null)
     );
     when(studentsInfoRepository.saveAll(any())).thenReturn(savedStudents);
     when(groupsService.bindStudentsToGroup(any(), anySet())).thenReturn(true);
@@ -96,8 +96,8 @@ class StudentsServiceImplTest {
     var info1Id = UUID.randomUUID();
     var info2Id = UUID.randomUUID();
     var savedStudents = List.of(
-      new StudentInfo(info1Id, student1, null),
-      new StudentInfo(info2Id, student2, null)
+      new StudentInfo(info1Id, student1.getId(), null),
+      new StudentInfo(info2Id, student2.getId(), null)
     );
     when(studentsInfoRepository.saveAll(any())).thenReturn(savedStudents);
     when(groupsService.bindStudentsToGroup(any(), anySet())).thenReturn(false);
