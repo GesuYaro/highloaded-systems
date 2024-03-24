@@ -15,4 +15,9 @@ class TeachersControllerTest extends FTesterLabApplication {
     void groups() {
         System.out.println(UUID.randomUUID());
     }
+
+    @Test
+    void test() {
+        System.out.println("test");
+    }
 }
