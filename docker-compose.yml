@@ -1,28 +1,64 @@
 version: '3.8'
 services:
   client-backend:
-    image: client:0.0.1
+    image: main-service-hls:latest
     environment:
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      JWT_SECRET_ACCESS_DECODED: ${JWT_SECRET_ACCESS_DECODED}
-      JWT_SECRET_ACCESS: ${JWT_SECRET_ACCESS}
-      JWT_SECRET_REFRESH_DECODED: ${JWT_SECRET_REFRESH_DECODED}
-      JWT_SECRET_REFRESH: ${JWT_SECRET_REFRESH}
-#      SPRING_PROFILES_ACTIVE: preprod
-    build:
-      context: .
-      dockerfile: Dockerfile
+#      DB_USERNAME: ${DB_USERNAME}
+#      DB_PASSWORD: ${DB_PASSWORD}
+#      JWT_SECRET_ACCESS_DECODED: ${JWT_SECRET_ACCESS_DECODED}
+#      JWT_SECRET_ACCESS: ${JWT_SECRET_ACCESS}
+#      JWT_SECRET_REFRESH_DECODED: ${JWT_SECRET_REFRESH_DECODED}
+#      JWT_SECRET_REFRESH: ${JWT_SECRET_REFRESH}
+      SPRING_PROFILES_ACTIVE: dev
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "8083:8083"
     depends_on:
-      - postgres
-  postgres:
+      - config-service-hls
+      - postgres-hls
+
+  postgres-hls:
     image: postgres:13.3
-    container_name: postgres
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: user
     ports:
       - "5432:5432"
+
+  config-service-hls:
+    image: config-server-hls:latest
+    environment:
+      SPRING_PROFILES_ACTIVE: native
+    ports:
+      - "8888:8888"
+
+  eureka-server-hls:
+    image: eureka-server-hls:latest
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+    ports:
+      - "8761:8761"
+
+  auth-service-hls:
+    image: auth-service-hls:latest
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8082:8082"
+
+  people-service-hls:
+    image: people-service-hls:latest
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8081:8081"
+
+  gateway-hls:
+    image: gateway-hls:latest
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8080:8080"

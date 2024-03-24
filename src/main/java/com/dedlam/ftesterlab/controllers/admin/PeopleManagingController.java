@@ -1,54 +1,48 @@
 package com.dedlam.ftesterlab.controllers.admin;
 
-import com.dedlam.ftesterlab.auth.database.UsersRepository;
-import com.dedlam.ftesterlab.auth.models.DefaultUser;
-import com.dedlam.ftesterlab.auth.models.Student;
-import com.dedlam.ftesterlab.auth.models.Teacher;
-import com.dedlam.ftesterlab.domain.people.database.PeopleRepository;
-import com.dedlam.ftesterlab.domain.people.database.Person;
-import com.dedlam.ftesterlab.domain.university.database.GroupsRepository;
-import com.dedlam.ftesterlab.domain.university.services.StudentsService;
-import com.dedlam.ftesterlab.domain.university.services.TeachersService;
+import com.dedlam.ftesterlab.domain.people.models.Person;
+import com.dedlam.ftesterlab.domain.people.services.PeopleService;
+import com.dedlam.ftesterlab.domain.users.UserService;
+import com.dedlam.ftesterlab.utils.exceptions.BaseException;
+import com.dedlam.ftesterlab.utils.exceptions.ExceptionType;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.annotation.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.PageRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 @RestController
 @RequestMapping("admin")
+@RequiredArgsConstructor
 public class PeopleManagingController {
-
-  private final PeopleRepository peopleRepository;
-
-  public PeopleManagingController(PeopleRepository peopleRepository) {
-    this.peopleRepository = peopleRepository;
-  }
+  private final UserService userService;
+  private final PeopleService peopleService;
+  private final CircuitBreakerFactory circuitBreakerFactory;
 
   @GetMapping("people")
   public ResponseEntity<PeopleView> people(@RequestParam int pageNumber) {
-    var pageRequest = PageRequest.of(pageNumber, 50);
-    var result = peopleRepository.findAll(pageRequest);
+    var result = peopleService.people(pageNumber);
+
     var people = new PeopleView(
-      result.getTotalPages(),
-      result.toList().stream().map(PeopleManagingController::personView).toList()
+      result.totalPageNumber(),
+      result.people().stream().map(this::personView).toList()
     );
 
     return ResponseEntity.ok(people);
   }
 
-  private static PersonView personView(Person person) {
+  private PersonView personView(Person person) {
+    var cb = circuitBreakerFactory.create("cb");
+    var username = cb.run(
+            () -> userService.user(person.getId()).username(),
+            throwable -> { throw new BaseException(ExceptionType.BAD_REQUEST); }
+    );
     return new PersonView(
-      person.getUser().getUsername(), person.getId().toString(), person.getName(),
+      username, person.getId().toString(), person.getName(),
       person.getMiddleName(), person.getLastName(), person.getBirthday()
     );
   }
@@ -67,5 +61,16 @@ public class PeopleManagingController {
     String lastName,
     @JsonFormat(pattern = "dd.MM.yyyy") LocalDate birthday
   ) {
+  }
+
+  @ExceptionHandler(BaseException.class)
+  public ResponseEntity<String> handleBaseException(BaseException e) {
+    HttpStatus status = null;
+    switch (e.getExceptionType()) {
+      case NOT_FOUND -> status = HttpStatus.NOT_FOUND;
+      case FORBIDDEN -> status = HttpStatus.FORBIDDEN;
+      case BAD_REQUEST -> status = HttpStatus.BAD_REQUEST;
+    }
+    return new ResponseEntity<>(e.getMessage(), status);
   }
 }

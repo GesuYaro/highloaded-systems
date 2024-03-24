@@ -1,11 +1,11 @@
 package com.dedlam.ftesterlab.controllers.people;
 
-import com.dedlam.ftesterlab.auth.database.UsersRepository;
 import com.dedlam.ftesterlab.controllers.BaseController;
 import com.dedlam.ftesterlab.controllers.people.dto.PersonView;
-import com.dedlam.ftesterlab.domain.people.database.Person;
+import com.dedlam.ftesterlab.domain.people.models.Person;
 import com.dedlam.ftesterlab.domain.people.services.PeopleService;
-import com.dedlam.ftesterlab.domain.people.services.dto.PersonDto;
+import com.dedlam.ftesterlab.domain.people.services.PersonDto;
+import com.dedlam.ftesterlab.domain.users.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -23,18 +23,18 @@ public class PeopleController extends BaseController {
 
   private final PeopleService service;
 
-  public PeopleController(UsersRepository usersRepository, PeopleService peopleService, PeopleService service) {
-    super(usersRepository, peopleService);
-    this.service = service;
+  public PeopleController(UserService userService, PeopleService peopleService) {
+    super(userService, peopleService);
+    this.service = peopleService;
   }
 
   @GetMapping("info")
   public ResponseEntity<?> getInfo() {
     var user = user();
-    var person = service.personByUserId(user.getId());
+    var person = service.personByUserId(user.id());
 
     if (person == null) {
-      var message = String.format("Can't find person-info for user '%s' with id='%s'", user.getUsername(), user.getId());
+      var message = String.format("Can't find person-info for user '%s' with id='%s'", user.username(), user.id());
       logger.warn(message);
       return new ResponseEntity<>(message, UNPROCESSABLE_ENTITY);
     }
@@ -50,12 +50,12 @@ public class PeopleController extends BaseController {
 
     var existingPerson = person();
     if (existingPerson != null) {
-      var message = String.format("Can't add person info for user '%s', because it is already added", user.getUsername());
+      var message = String.format("Can't add person info for user '%s', because it is already added", user.username());
       logger.warn(message);
       return new ResponseEntity<>(message, UNPROCESSABLE_ENTITY);
     }
 
-    UUID personId = service.create(user, createDto);
+    UUID personId = service.create(user.id(), createDto);
 
     if (personId == null) {
       return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
@@ -72,7 +72,7 @@ public class PeopleController extends BaseController {
       var user = user();
       var message = String.format(
         "Can't update person, because no person-info for user '%s' with id='%s'",
-        user.getUsername(), user.getId()
+        user.username(), user.id()
       );
       logger.warn(message);
       return new ResponseEntity<>(message, UNPROCESSABLE_ENTITY);

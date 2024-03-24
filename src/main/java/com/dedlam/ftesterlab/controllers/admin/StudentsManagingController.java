@@ -1,11 +1,11 @@
 package com.dedlam.ftesterlab.controllers.admin;
 
-import com.dedlam.ftesterlab.auth.models.DefaultUser;
-import com.dedlam.ftesterlab.auth.models.Student;
-import com.dedlam.ftesterlab.domain.people.database.PeopleRepository;
-import com.dedlam.ftesterlab.domain.people.database.Person;
+import com.dedlam.ftesterlab.auth.models.User;
+import com.dedlam.ftesterlab.domain.people.models.Person;
+import com.dedlam.ftesterlab.domain.people.services.PeopleService;
 import com.dedlam.ftesterlab.domain.university.database.GroupsRepository;
 import com.dedlam.ftesterlab.domain.university.services.StudentsService;
+import com.dedlam.ftesterlab.domain.users.UserService;
 import jakarta.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,21 +23,24 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 @RequestMapping("admin/students")
 public class StudentsManagingController {
   private static final Logger logger = LoggerFactory.getLogger(StudentsManagingController.class);
-
-  private final PeopleRepository peopleRepository;
+  private final PeopleService peopleService;
   private final StudentsService studentsService;
   private final GroupsRepository groupsRepository;
+  private final UserService userService;
 
-  public StudentsManagingController(PeopleRepository peopleRepository, StudentsService studentsService, GroupsRepository groupsRepository) {
-    this.peopleRepository = peopleRepository;
+  public StudentsManagingController(PeopleService peopleService, StudentsService studentsService, GroupsRepository groupsRepository, UserService userService) {
+    this.peopleService = peopleService;
     this.studentsService = studentsService;
     this.groupsRepository = groupsRepository;
+    this.userService = userService;
   }
 
   @PostMapping("init")
   public ResponseEntity<?> initStudentsInfo(@RequestBody InitStudentsInfoRequest request) {
     Set<String> logins = Set.copyOf(request.peopleLogins);
-    var people = peopleRepository.findAllByUserUsernameIn(logins);
+    var userIds = userService.findUsersByUsernames(logins).stream().map(User::id).collect(Collectors.toSet());
+
+    var people = userIds.stream().map(peopleService::personByUserId).toList();
 
     var errorReason = validateStudentsForInit(people, request);
     if (errorReason != null) {
@@ -53,7 +57,8 @@ public class StudentsManagingController {
   @PutMapping("change-group")
   public ResponseEntity<?> updateStudentsGroup(@RequestBody UpdateStudentsGroupRequest request) {
     var logins = Set.copyOf(request.peopleLogins);
-    var people = peopleRepository.findAllByUserUsernameIn(logins);
+    var userIds = userService.findUsersByUsernames(logins).stream().map(User::id).collect(Collectors.toSet());
+    var people = userIds.stream().map(peopleService::personByUserId).toList();
 
     var accountsErrorReason = validatePeopleForStudentsAccount(people, logins);
     if (accountsErrorReason != null) {
@@ -72,16 +77,17 @@ public class StudentsManagingController {
   }
 
   private @Nullable String validatePeopleForStudentsAccount(List<Person> people, Set<String> logins) {
+    var users = people.stream().map(Person::getUserId).map(userService::user).filter(Objects::nonNull).toList();
+
     if (people.size() != logins.size()) {
-      var foundLogins = people.stream().map(p -> p.getUser().getUsername()).collect(Collectors.toSet());
+      var foundLogins = users.stream().map(User::username).collect(Collectors.toSet());
       var unknownLogins = logins.stream().filter(login -> !foundLogins.contains(login)).collect(Collectors.toSet());
       return String.format("can't find people with usernames %s", unknownLogins);
     }
 
-    var notStudentsUsernames = people.stream()
-      .map(Person::getUser)
-      .filter(user -> !Student.class.isAssignableFrom(user.getClass()))
-      .map(DefaultUser::getUsername)
+    var notStudentsUsernames = users.stream()
+      .filter(user -> !user.roles().contains("STUDENT"))
+      .map(User::username)
       .toList();
 
     if (!notStudentsUsernames.isEmpty()) {

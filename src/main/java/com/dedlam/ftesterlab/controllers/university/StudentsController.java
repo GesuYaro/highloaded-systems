@@ -1,6 +1,5 @@
 package com.dedlam.ftesterlab.controllers.university;
 
-import com.dedlam.ftesterlab.auth.database.UsersRepository;
 import com.dedlam.ftesterlab.controllers.BaseController;
 import com.dedlam.ftesterlab.domain.people.services.PeopleService;
 import com.dedlam.ftesterlab.domain.tests.mappers.DeadlineMapper;
@@ -8,6 +7,7 @@ import com.dedlam.ftesterlab.domain.tests.mappers.TestMapper;
 import com.dedlam.ftesterlab.domain.tests.services.StudentTestService;
 import com.dedlam.ftesterlab.domain.tests.services.dto.*;
 import com.dedlam.ftesterlab.domain.university.database.StudentsInfoRepository;
+import com.dedlam.ftesterlab.domain.users.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -28,8 +28,15 @@ public class StudentsController extends BaseController {
   private final DeadlineMapper deadlineMapper;
   private final TestMapper testMapper;
 
-  public StudentsController(UsersRepository usersRepository, PeopleService peopleService, StudentsInfoRepository studentsInfoRepository, StudentTestService studentTestService, DeadlineMapper deadlineMapper, TestMapper testMapper) {
-    super(usersRepository, peopleService);
+  public StudentsController(
+    UserService userService,
+    PeopleService peopleService,
+    StudentsInfoRepository studentsInfoRepository,
+    StudentTestService studentTestService,
+    DeadlineMapper deadlineMapper,
+    TestMapper testMapper
+  ) {
+    super(userService, peopleService);
     this.studentsInfoRepository = studentsInfoRepository;
     this.studentTestService = studentTestService;
     this.deadlineMapper = deadlineMapper;
@@ -60,17 +67,17 @@ public class StudentsController extends BaseController {
     if (person == null) {
       var user = user();
       var msg = String.format(
-        "Can't receive student info, because no person-info for user '%s' with id='%s'", user.getUsername(), user.getId()
+        "Can't receive student info, because no person-info for user '%s' with id='%s'", user.username(), user.id()
       );
       logger.warn(msg);
       return new ResponseEntity<>(msg, UNPROCESSABLE_ENTITY);
     }
 
-    var studentInfoOpt = studentsInfoRepository.findStudentInfoByStudent_Id(person.getId());
+    var studentInfoOpt = studentsInfoRepository.findStudentInfoByStudentId(person.getId());
     if (studentInfoOpt.isEmpty()) {
       var user = user();
       var msg = String.format(
-        "Can't receive student info, because student-info is not initialized for student '%s'", user.getUsername()
+        "Can't receive student info, because student-info is not initialized for student '%s'", user.username()
       );
       logger.warn(msg);
       return new ResponseEntity<>(msg, UNPROCESSABLE_ENTITY);

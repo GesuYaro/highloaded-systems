@@ -6,5 +6,5 @@ RUN gradle clean build -x test
 FROM bellsoft/liberica-openjre-alpine:17
 WORKDIR /app
 COPY --from=builder /app/build/libs/*.jar /app/*.jar
-EXPOSE 8080
+EXPOSE 8083
 ENTRYPOINT ["java", "-jar", "/app/*.jar"]

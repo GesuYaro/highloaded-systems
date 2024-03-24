@@ -1,9 +1,8 @@
 package com.dedlam.ftesterlab.controllers.admin;
 
-import com.dedlam.ftesterlab.auth.database.UsersRepository;
-import com.dedlam.ftesterlab.auth.models.Teacher;
-import com.dedlam.ftesterlab.domain.people.database.PeopleRepository;
+import com.dedlam.ftesterlab.domain.people.services.PeopleService;
 import com.dedlam.ftesterlab.domain.university.services.TeachersService;
+import com.dedlam.ftesterlab.domain.users.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -18,40 +17,33 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 @RequestMapping("admin/teachers")
 public class TeachersManagingController {
   private static final Logger logger = LoggerFactory.getLogger(TeachersManagingController.class);
-  private final UsersRepository usersRepository;
-  private final PeopleRepository peopleRepository;
+  private final UserService userService;
+  private final PeopleService peopleService;
   private final TeachersService teachersService;
 
-  public TeachersManagingController(UsersRepository usersRepository, PeopleRepository peopleRepository, TeachersService teachersService) {
-    this.usersRepository = usersRepository;
-    this.peopleRepository = peopleRepository;
+  public TeachersManagingController(UserService userService, PeopleService peopleService, TeachersService teachersService) {
+    this.userService = userService;
+    this.peopleService = peopleService;
     this.teachersService = teachersService;
   }
 
   @PostMapping("init")
   public ResponseEntity<?> initTeachersInfo(@RequestBody InitTeachersInfoRequest request) {
-    var teacherUserOpt = usersRepository.findUserByUsername(request.username);
-    if (teacherUserOpt.isEmpty()) {
+    var teacherUser = userService.findUserByUsername(request.username);
+    if (teacherUser == null) {
       var message = String.format("Can't init teacher, because can't find teacher with username '%s'", request.username);
       logger.warn(message);
       return new ResponseEntity<>(message, UNPROCESSABLE_ENTITY);
     }
 
-    var user = teacherUserOpt.get();
-    if (!Teacher.class.isAssignableFrom(user.getClass())) {
-      var message = String.format("Can't init teacher, because user with username '%s' isn't teacher", request.username);
-      logger.warn(message);
-      return new ResponseEntity<>(message, UNPROCESSABLE_ENTITY);
-    }
-
-    var teacherOpt = peopleRepository.findByUserId(user.getId());
-    if (teacherOpt.isEmpty()) {
+    var teacher = peopleService.personByUserId(teacherUser.id());
+    if (teacher == null) {
       var message = String.format("Can't init teacher, because can't find person with username '%s'", request.username);
       logger.warn(message);
       return new ResponseEntity<>(message, UNPROCESSABLE_ENTITY);
     }
 
-    boolean result = teachersService.createAndInitTeachersInfo(teacherOpt.get());
+    boolean result = teachersService.createAndInitTeachersInfo(teacher);
 
     return ResponseEntity.ok(result);
   }
