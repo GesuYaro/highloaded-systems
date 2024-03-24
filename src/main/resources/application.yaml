@@ -9,20 +9,8 @@ spring:
         web-allow-others: true
   application:
     name: main-service
-  #  datasource:
-#    url: jdbc:postgresql://postgres:5432/postgres
-#    username: postgres
-#    password: user
-#    driverClassName: org.postgresql.Driver
-#  jpa:
-#    hibernate:
-#      ddl-auto: none
-#  liquibase:
-#    enabled: true
-#    default-schema: f_tester_lab
-#    change-log: classpath:db/changesets.xml
   config:
-    import: configserver:http://localhost:8888
+    import: configserver:http://config-service-hls:8888
 
 logging:
   level:
@@ -32,10 +20,3 @@ logging:
 
 server:
   port: 8083
-
-#eureka:
-#  client:
-#    serviceUrl:
-#      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
-#  instance:
-#    preferIpAddress: true
