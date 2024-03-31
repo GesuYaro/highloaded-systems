@@ -36,6 +36,10 @@ public class StudentInfo {
     this.id = id;
   }
 
+  public UUID getStudentId() {
+    return studentId;
+  }
+
   public @Nullable Group getGroup() {
     return group;
   }
