@@ -25,7 +25,7 @@ public class AdminController {
 
   @GetMapping("/test")
   public String test() {
-    return "date: " + ZonedDateTime.now(ZoneId.systemDefault()).toString();
+    return "current date and time: " + ZonedDateTime.now(ZoneId.systemDefault()).toString();
   }
 
   public record CreateGroupRequest(
