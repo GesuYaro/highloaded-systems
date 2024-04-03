@@ -75,7 +75,7 @@ public class TeachersController extends BaseController {
         return testService.tests(testSearchDto, pageable).map(testMapper::toTestView);
     }
 
-    @PatchMapping("/tests")
+    @PostMapping("/tests/state")
     public TestView changeTestState(@RequestBody @Validated TestChangeStateDto changeStateDto) {
         var user = person();
         return testMapper.toTestView(testService.changeTestOpenState(changeStateDto, user));
